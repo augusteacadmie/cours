@@ -1,0 +1,158 @@
+
+<style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0}
+.ex-wrap{border-radius:12px;border:2px solid #eee;background:#fff;cursor:pointer;overflow:hidden;transition:border-color .2s,background .2s}
+.ex-wrap.open{border-color:#ffaa00;background:#fffbf0}
+.ex-header{padding:11px 16px;display:flex;align-items:center;justify-content:space-between}
+.ex-icon{width:32px;height:32px;border-radius:8px;background:#eee;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;transition:background .2s}
+.ex-wrap.open .ex-icon{background:#ffaa00}
+.ex-num{font-size:10px;color:#bbb;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:1px;transition:color .2s}
+.ex-wrap.open .ex-num{color:#ffaa00}
+.ex-title{font-size:13px;font-weight:800;color:#bbb;transition:color .2s}
+.ex-wrap.open .ex-title{color:#111}
+.ex-arr{color:#bbb;font-size:14px;transition:color .2s}
+.ex-wrap.open .ex-arr{color:#ffaa00}
+.ex-body{display:none;padding:0 16px 14px}
+.ex-wrap.open .ex-body{display:block}
+.dialog{background:white;border-radius:10px;padding:13px;margin-bottom:10px;border:1px solid #ffe0b0}
+.dialog-row{display:flex;gap:10px}
+.dialog-row+.dialog-row{margin-top:8px;padding-top:8px;border-top:1px solid #ffe0b0}
+.dlabel{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;min-width:52px;padding-top:2px}
+.dlabel.guest{color:#ffaa00}
+.dlabel.you{color:#111}
+.dtext{font-size:12px;color:#555;font-style:italic;line-height:1.65}
+.dtext.you{color:#111;font-style:normal}
+.why{background:#fffbf0;border-radius:8px;padding:10px 13px;border-left:3px solid #ffaa00;font-size:11px;color:#555;line-height:1.65}
+</style>
+
+<div style="font-family:'Montserrat',sans-serif;background:#fff;border-radius:16px;padding:2rem">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+    <div>
+      <p style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#ffaa00;font-weight:700;margin-bottom:4px">Unit 4 · Taking Orders · English</p>
+      <h2 style="font-size:21px;font-weight:800;color:#111;line-height:1.25">Reformulation as a sales tool —<br>the natural link</h2>
+    </div>
+    <span style="background:#ffaa00;color:white;font-size:10px;font-weight:800;padding:5px 12px;border-radius:20px;flex-shrink:0;margin-top:4px">EN</span>
+  </div>
+  <p style="font-size:12px;color:#bbb;font-weight:600;margin-bottom:20px">Three techniques · Click each example to reveal the full exchange</p>
+
+  <div style="display:flex;gap:0;border-radius:12px;overflow:hidden;border:2px solid #ffaa00;margin-bottom:18px">
+    <button onclick="rt(0)" id="rt0" style="flex:1;padding:11px 8px;border:none;background:#ffaa00;color:white;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;border-right:1px solid rgba(255,255,255,0.3)">Reformulation<br><span style="font-weight:400;opacity:0.85">as a proposal</span></button>
+    <button onclick="rt(1)" id="rt1" style="flex:1;padding:11px 8px;border:none;background:#fff8ee;color:#ccc;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;border-right:1px solid #ffe0b0">Reformulation<br><span style="font-weight:400">as an upgrade</span></button>
+    <button onclick="rt(2)" id="rt2" style="flex:1;padding:11px 8px;border:none;background:#fff8ee;color:#ccc;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit">Reformulation<br><span style="font-weight:400">as an addition</span></button>
+  </div>
+
+  <div id="tdesc" style="background:#fffbf0;border-left:4px solid #ffaa00;padding:12px 15px;border-radius:0 10px 10px 0;margin-bottom:16px;font-size:12px;color:#555;line-height:1.7">
+    <strong style="color:#ffaa00">Reformulation as a proposal</strong> — When the order is open or generic, the reformulation becomes the recommendation itself. You answer the guest's need with a specific proposal, framed as a natural confirmation. No selling — just completing.
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:8px">
+
+    <div class="ex-wrap open" id="e0" onclick="toggle(0)">
+      <div class="ex-header">
+        <div style="display:flex;align-items:center;gap:11px">
+          <div class="ex-icon">🌿</div>
+          <div>
+            <p class="ex-num">Example 1</p>
+            <p class="ex-title">"Something light and refreshing."</p>
+          </div>
+        </div>
+        <span class="ex-arr" id="arr0">▾</span>
+      </div>
+      <div class="ex-body">
+        <div class="dialog">
+          <div class="dialog-row"><span class="dlabel guest">Guest</span><p class="dtext">"I'm not sure — something light, not too sweet, refreshing."</p></div>
+          <div class="dialog-row"><span class="dlabel you">You</span><p class="dtext you">"In that case — I'd suggest our <strong style="color:#ffaa00">Cucumber Cooler</strong>. It's gin, fresh cucumber, tonic and a touch of elderflower. Very clean, not sweet at all. Does that sound good?"</p></div>
+        </div>
+        <p class="why"><strong style="color:#ffaa00">Why it works :</strong> The guest gave you the brief. You turned it into a product. The reformulation replaces the hesitation — the guest doesn't need to decide, they just need to say yes.</p>
+      </div>
+    </div>
+
+    <div class="ex-wrap" id="e1" onclick="toggle(1)">
+      <div class="ex-header">
+        <div style="display:flex;align-items:center;gap:11px">
+          <div class="ex-icon">🥃</div>
+          <div>
+            <p class="ex-num">Example 2</p>
+            <p class="ex-title">"A gin and tonic."</p>
+          </div>
+        </div>
+        <span class="ex-arr" id="arr1">▸</span>
+      </div>
+      <div class="ex-body">
+        <div class="dialog">
+          <div class="dialog-row"><span class="dlabel guest">Guest</span><p class="dtext">"I'll have a gin and tonic, please."</p></div>
+          <div class="dialog-row"><span class="dlabel you">You</span><p class="dtext you">"Of course — do you have a preference on the gin, or shall I suggest something? We have the <strong style="color:#ffaa00">Hendrick's</strong> at the moment — very floral, with cucumber notes. It's just two euros more than the house gin. Shall I go with that?"</p></div>
+        </div>
+        <p class="why"><strong style="color:#ffaa00">Why it works :</strong> The order was complete — but it left the brand open. That gap is the upgrade opportunity. The price difference is named immediately after the value. The guest decides freely, with full information.</p>
+      </div>
+    </div>
+
+    <div class="ex-wrap" id="e2" onclick="toggle(2)">
+      <div class="ex-header">
+        <div style="display:flex;align-items:center;gap:11px">
+          <div class="ex-icon">☕</div>
+          <div>
+            <p class="ex-num">Example 3</p>
+            <p class="ex-title">"Just a coffee, thanks."</p>
+          </div>
+        </div>
+        <span class="ex-arr" id="arr2">▸</span>
+      </div>
+      <div class="ex-body">
+        <div class="dialog">
+          <div class="dialog-row"><span class="dlabel guest">Guest</span><p class="dtext">"We've finished — just a coffee to close, please."</p></div>
+          <div class="dialog-row"><span class="dlabel you">You</span><p class="dtext you">"Of course. If you'd like something to go alongside — we have a <strong style="color:#ffaa00">Calvados Pierre Huet</strong>, aged eight years. It pairs beautifully with coffee — warm, rounded, with a touch of apple. A classic French way to close a meal."</p></div>
+        </div>
+        <p class="why"><strong style="color:#ffaa00">Why it works :</strong> The addition is framed as a pairing, not a sale. "To go alongside" signals coherence, not upselling. The cultural reference adds value without pressure.</p>
+      </div>
+    </div>
+
+    <div class="ex-wrap" id="e3" onclick="toggle(3)">
+      <div class="ex-header">
+        <div style="display:flex;align-items:center;gap:11px">
+          <div class="ex-icon">🍋</div>
+          <div>
+            <p class="ex-num">Example 4</p>
+            <p class="ex-title">"Something for my wife — she doesn't drink much."</p>
+          </div>
+        </div>
+        <span class="ex-arr" id="arr3">▸</span>
+      </div>
+      <div class="ex-body">
+        <div class="dialog">
+          <div class="dialog-row"><span class="dlabel guest">Guest</span><p class="dtext">"And for my wife — she doesn't really drink, but something nice, you know?"</p></div>
+          <div class="dialog-row"><span class="dlabel you">You</span><p class="dtext you">"In that case — our <strong style="color:#ffaa00">Yuzu Spritz</strong> is a wonderful choice. Very light on alcohol, yuzu citrus, elderflower and sparkling water. It's beautiful to look at and very easy to drink. I think she'll love it."</p></div>
+        </div>
+        <p class="why"><strong style="color:#ffaa00">Why it works :</strong> The brief came from a third party. You answered the actual need — something beautiful and approachable — not just the constraint. "I think she'll love it" closes with genuine warmth, not a sales line.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="background:#fffbf0;border-radius:10px;padding:12px 15px;margin-top:14px;display:flex;align-items:flex-start;gap:10px">
+    <span style="color:#ffaa00;font-size:14px;flex-shrink:0">✦</span>
+    <p style="font-size:11px;color:#555;line-height:1.7"><strong style="color:#ffaa00">The rule :</strong> reformulation becomes a sales tool the moment you stop repeating the order and start <strong>completing</strong> it. A name, a detail, a pairing suggestion — woven into the confirmation, never added on top of it.</p>
+  </div>
+</div>
+
+<script>
+const techs=[
+  '<strong style="color:#ffaa00">Reformulation as a proposal</strong> — When the order is open or generic, the reformulation becomes the recommendation itself. You answer the guest\'s need with a specific proposal, framed as a natural confirmation. No selling — just completing.',
+  '<strong style="color:#ffaa00">Reformulation as an upgrade</strong> — When the order names a category but no brand, the reformulation is the natural moment to suggest a step up. Name the product, state the feature, mention the price difference immediately after.',
+  '<strong style="color:#ffaa00">Reformulation as an addition</strong> — When the order is precise and complete, the reformulation can carry a pairing suggestion alongside the confirmation. Framed as coherence — not as a sale — it doubles the spend without doubling the pressure.'
+];
+function rt(n){
+  [0,1,2].forEach(i=>{
+    const b=document.getElementById('rt'+i);
+    b.style.background=i===n?'#ffaa00':'#fff8ee';
+    b.style.color=i===n?'white':'#ccc';
+  });
+  document.getElementById('tdesc').innerHTML=techs[n];
+}
+function toggle(n){
+  const el=document.getElementById('e'+n);
+  const arr=document.getElementById('arr'+n);
+  const isOpen=el.classList.contains('open');
+  el.classList.toggle('open',!isOpen);
+  arr.textContent=isOpen?'▸':'▾';
+}
+</script>
