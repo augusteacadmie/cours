@@ -1,0 +1,189 @@
+
+<style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0}</style>
+<div style="font-family:'Montserrat',sans-serif;background:#fff;border-radius:16px;padding:2rem">
+
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+    <div>
+      <p style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#ffaa00;font-weight:700;margin-bottom:4px">Unit 4 · Taking Orders · English</p>
+      <h2 style="font-size:21px;font-weight:800;color:#111;line-height:1.25">Reformulation as a sales tool —<br>the natural link</h2>
+    </div>
+    <span style="background:#ffaa00;color:white;font-size:10px;font-weight:800;padding:5px 12px;border-radius:20px;flex-shrink:0;margin-top:4px">EN</span>
+  </div>
+  <p style="font-size:12px;color:#bbb;font-weight:600;margin-bottom:20px">Three techniques · Click each example to reveal the full exchange</p>
+
+  <!-- Technique tabs -->
+  <div style="display:flex;gap:0;border-radius:12px;overflow:hidden;border:2px solid #ffaa00;margin-bottom:18px">
+    <button onclick="rt(0)" id="rt0" style="flex:1;padding:11px 8px;border:none;background:#ffaa00;color:white;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;border-right:1px solid rgba(255,255,255,0.3)">Reformulation<br><span style="font-weight:400;opacity:0.85">as a proposal</span></button>
+    <button onclick="rt(1)" id="rt1" style="flex:1;padding:11px 8px;border:none;background:#fff8ee;color:#ccc;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;border-right:1px solid #ffe0b0">Reformulation<br><span style="font-weight:400">as an upgrade</span></button>
+    <button onclick="rt(2)" id="rt2" style="flex:1;padding:11px 8px;border:none;background:#fff8ee;color:#ccc;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit">Reformulation<br><span style="font-weight:400">as an addition</span></button>
+  </div>
+
+  <!-- Technique description -->
+  <div id="tech_desc" style="background:#fffbf0;border-left:4px solid #ffaa00;padding:12px 15px;border-radius:0 10px 10px 0;margin-bottom:16px">
+    <p style="font-size:12px;color:#555;line-height:1.7" id="tdesc">When the order is open or generic, the reformulation <strong style="color:#ffaa00">becomes the recommendation itself</strong>. You don't wait for the guest to ask — you answer their need with a specific proposal, framed as a natural confirmation.</p>
+  </div>
+
+  <!-- Examples -->
+  <div style="display:flex;flex-direction:column;gap:8px" id="examples_wrap">
+
+    <div onclick="ex(0)" id="ex0" style="border-radius:12px;border:2px solid #ffaa00;background:#fffbf0;cursor:pointer;overflow:hidden;transition:all .2s">
+      <div style="padding:11px 16px;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:11px">
+          <div style="width:32px;height:32px;border-radius:8px;background:#ffaa00;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px">🌿</div>
+          <div>
+            <p style="font-size:10px;color:#ffaa00;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:1px">Example 1</p>
+            <p style="font-size:13px;font-weight:800;color:#111">"Something light and refreshing."</p>
+          </div>
+        </div>
+        <span id="ea0" style="color:#ffaa00;font-size:14px">▾</span>
+      </div>
+      <div id="ex0d" style="padding:0 16px 14px;display:block">
+        <div style="background:white;border-radius:10px;padding:13px;margin-bottom:10px;border:1px solid #ffe0b0">
+          <div style="display:flex;gap:10px;margin-bottom:8px">
+            <span style="font-size:10px;font-weight:800;color:#ffaa00;text-transform:uppercase;letter-spacing:1px;min-width:52px;padding-top:1px">Guest</span>
+            <p style="font-size:12px;color:#555;font-style:italic;line-height:1.65">"I'm not sure — something light, not too sweet, refreshing."</p>
+          </div>
+          <div style="height:1px;background:#ffe0b0;margin-bottom:8px"></div>
+          <div style="display:flex;gap:10px">
+            <span style="font-size:10px;font-weight:800;color:#111;text-transform:uppercase;letter-spacing:1px;min-width:52px;padding-top:1px">You</span>
+            <p style="font-size:12px;color:#111;line-height:1.65">"In that case — I'd suggest our <strong style="color:#ffaa00">Cucumber Cooler</strong>. It's gin, fresh cucumber, tonic and a touch of elderflower. Very clean, not sweet at all. Does that sound good?"</p>
+          </div>
+        </div>
+        <div style="background:#fffbf0;border-radius:8px;padding:10px 13px;border-left:3px solid #ffaa00">
+          <p style="font-size:11px;color:#555;line-height:1.65"><strong style="color:#ffaa00">Why it works :</strong> The guest gave you the brief. You turned it into a product. The reformulation replaces the hesitation — the guest doesn't need to decide, they just need to say yes.</p>
+        </div>
+      </div>
+    </div>
+
+    <div onclick="ex(1)" id="ex1" style="border-radius:12px;border:2px solid #eee;background:#fff;cursor:pointer;overflow:hidden;transition:all .2s">
+      <div style="padding:11px 16px;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:11px">
+          <div style="width:32px;height:32px;border-radius:8px;background:#eee;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px">🥃</div>
+          <div>
+            <p style="font-size:10px;color:#bbb;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:1px">Example 2</p>
+            <p style="font-size:13px;font-weight:800;color:#bbb">"A gin and tonic."</p>
+          </div>
+        </div>
+        <span id="ea1" style="color:#bbb;font-size:14px">▸</span>
+      </div>
+      <div id="ex1d" style="display:none;padding:0 16px 14px">
+        <div style="background:white;border-radius:10px;padding:13px;margin-bottom:10px;border:1px solid #ffe0b0">
+          <div style="display:flex;gap:10px;margin-bottom:8px">
+            <span style="font-size:10px;font-weight:800;color:#ffaa00;text-transform:uppercase;letter-spacing:1px;min-width:52px;padding-top:1px">Guest</span>
+            <p style="font-size:12px;color:#555;font-style:italic;line-height:1.65">"I'll have a gin and tonic, please."</p>
+          </div>
+          <div style="height:1px;background:#ffe0b0;margin-bottom:8px"></div>
+          <div style="display:flex;gap:10px">
+            <span style="font-size:10px;font-weight:800;color:#111;text-transform:uppercase;letter-spacing:1px;min-width:52px;padding-top:1px">You</span>
+            <p style="font-size:12px;color:#111;line-height:1.65">"Of course — do you have a preference on the gin, or shall I suggest something? We have the <strong style="color:#ffaa00">Hendrick's</strong> at the moment — very floral, with cucumber notes. It's just two euros more than the house gin. Shall I go with that?"</p>
+          </div>
+        </div>
+        <div style="background:#fffbf0;border-radius:8px;padding:10px 13px;border-left:3px solid #ffaa00">
+          <p style="font-size:11px;color:#555;line-height:1.65"><strong style="color:#ffaa00">Why it works :</strong> The order was complete — but it left the brand open. That gap is the upgrade opportunity. The price difference is named immediately after the value. The guest decides freely, with full information.</p>
+        </div>
+      </div>
+    </div>
+
+    <div onclick="ex(2)" id="ex2" style="border-radius:12px;border:2px solid #eee;background:#fff;cursor:pointer;overflow:hidden;transition:all .2s">
+      <div style="padding:11px 16px;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:11px">
+          <div style="width:32px;height:32px;border-radius:8px;background:#eee;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px">☕</div>
+          <div>
+            <p style="font-size:10px;color:#bbb;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:1px">Example 3</p>
+            <p style="font-size:13px;font-weight:800;color:#bbb">"Just a coffee, thanks."</p>
+          </div>
+        </div>
+        <span id="ea2" style="color:#bbb;font-size:14px">▸</span>
+      </div>
+      <div id="ex2d" style="display:none;padding:0 16px 14px">
+        <div style="background:white;border-radius:10px;padding:13px;margin-bottom:10px;border:1px solid #ffe0b0">
+          <div style="display:flex;gap:10px;margin-bottom:8px">
+            <span style="font-size:10px;font-weight:800;color:#ffaa00;text-transform:uppercase;letter-spacing:1px;min-width:52px;padding-top:1px">Guest</span>
+            <p style="font-size:12px;color:#555;font-style:italic;line-height:1.65">"We've finished — just a coffee to close, please."</p>
+          </div>
+          <div style="height:1px;background:#ffe0b0;margin-bottom:8px"></div>
+          <div style="display:flex;gap:10px">
+            <span style="font-size:10px;font-weight:800;color:#111;text-transform:uppercase;letter-spacing:1px;min-width:52px;padding-top:1px">You</span>
+            <p style="font-size:12px;color:#111;line-height:1.65">"Of course. If you'd like something to go alongside — we have a <strong style="color:#ffaa00">Calvados Pierre Huet</strong>, aged eight years. It pairs beautifully with coffee — warm, rounded, with a touch of apple. A classic French way to close a meal."</p>
+          </div>
+        </div>
+        <div style="background:#fffbf0;border-radius:8px;padding:10px 13px;border-left:3px solid #ffaa00">
+          <p style="font-size:11px;color:#555;line-height:1.65"><strong style="color:#ffaa00">Why it works :</strong> The addition is framed as a pairing, not a sale. "To go alongside" signals coherence, not upselling. The cultural reference — "French way to close a meal" — adds value without pressure.</p>
+        </div>
+      </div>
+    </div>
+
+    <div onclick="ex(3)" id="ex3" style="border-radius:12px;border:2px solid #eee;background:#fff;cursor:pointer;overflow:hidden;transition:all .2s">
+      <div style="padding:11px 16px;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:11px">
+          <div style="width:32px;height:32px;border-radius:8px;background:#eee;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px">🍋</div>
+          <div>
+            <p style="font-size:10px;color:#bbb;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:1px">Example 4</p>
+            <p style="font-size:13px;font-weight:800;color:#bbb">"Something for my wife — she doesn't drink much."</p>
+          </div>
+        </div>
+        <span id="ea3" style="color:#bbb;font-size:14px">▸</span>
+      </div>
+      <div id="ex3d" style="display:none;padding:0 16px 14px">
+        <div style="background:white;border-radius:10px;padding:13px;margin-bottom:10px;border:1px solid #ffe0b0">
+          <div style="display:flex;gap:10px;margin-bottom:8px">
+            <span style="font-size:10px;font-weight:800;color:#ffaa00;text-transform:uppercase;letter-spacing:1px;min-width:52px;padding-top:1px">Guest</span>
+            <p style="font-size:12px;color:#555;font-style:italic;line-height:1.65">"And for my wife — she doesn't really drink, but something nice, you know?"</p>
+          </div>
+          <div style="height:1px;background:#ffe0b0;margin-bottom:8px"></div>
+          <div style="display:flex;gap:10px">
+            <span style="font-size:10px;font-weight:800;color:#111;text-transform:uppercase;letter-spacing:1px;min-width:52px;padding-top:1px">You</span>
+            <p style="font-size:12px;color:#111;line-height:1.65">"In that case — our <strong style="color:#ffaa00">Yuzu Spritz</strong> is a wonderful choice. It's very light on alcohol, with yuzu citrus, elderflower and a touch of sparkling water. It's beautiful to look at and very easy to drink. I think she'll love it."</p>
+          </div>
+        </div>
+        <div style="background:#fffbf0;border-radius:8px;padding:10px 13px;border-left:3px solid #ffaa00">
+          <p style="font-size:11px;color:#555;line-height:1.65"><strong style="color:#ffaa00">Why it works :</strong> The brief came from a third party. You answered the actual need — something beautiful and approachable — not just the constraint. "I think she'll love it" closes with genuine warmth, not a sales line.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="background:#fffbf0;border-radius:10px;padding:12px 15px;margin-top:14px;display:flex;align-items:flex-start;gap:10px">
+    <span style="color:#ffaa00;font-size:14px;flex-shrink:0;margin-top:1px">✦</span>
+    <p style="font-size:11px;color:#555;line-height:1.7"><strong style="color:#ffaa00">The rule :</strong> reformulation becomes a sales tool the moment you stop repeating the order and start <strong>completing</strong> it. A name, a detail, a pairing suggestion — woven into the confirmation, never added on top of it.</p>
+  </div>
+
+</div>
+
+<script>
+const techs=[
+  '<strong style="color:#ffaa00">Reformulation as a proposal</strong> — When the order is open or generic, the reformulation becomes the recommendation itself. You answer the guest\'s need with a specific proposal, framed as a natural confirmation. No selling — just completing.',
+  '<strong style="color:#ffaa00">Reformulation as an upgrade</strong> — When the order names a category but no brand, the reformulation is the natural moment to suggest a step up. The gap left by the guest is your opening. Name the product, state the feature, mention the price difference immediately after.',
+  '<strong style="color:#ffaa00">Reformulation as an addition</strong> — When the order is precise and complete, the reformulation can carry a pairing suggestion alongside the confirmation. Framed as coherence — not as a sale — it doubles the spend without doubling the pressure.'
+];
+const exOpen=[true,false,false,false];
+
+function rt(n){
+  [0,1,2].forEach(i=>{
+    const b=document.getElementById('rt'+i);
+    b.style.background=i===n?'#ffaa00':'#fff8ee';
+    b.style.color=i===n?'white':'#ccc';
+  });
+  document.getElementById('tdesc').innerHTML=techs[n];
+}
+
+function ex(n){
+  exOpen[n]=!exOpen[n];
+  [0,1,2,3].forEach(i=>{
+    const d=document.getElementById('ex'+i+'d');
+    const el=document.getElementById('ex'+i);
+    const arr=document.getElementById('ea'+i);
+    const icon=el.querySelector('div[style*="border-radius:8px"]');
+    const isOpen=exOpen[i];
+    d.style.display=isOpen?'block':'none';
+    el.style.borderColor=isOpen?'#ffaa00':'#eee';
+    el.style.background=isOpen?'#fffbf0':'#fff';
+    if(icon)icon.style.background=isOpen?'#ffaa00':'#eee';
+    arr.textContent=isOpen?'▾':'▸';
+    arr.style.color=isOpen?'#ffaa00':'#bbb';
+    el.querySelectorAll('.\\:flex > div:last-child p')[0].style.color=isOpen?'#ffaa00':'#bbb';
+    el.querySelectorAll('.\\:flex > div:last-child p')[1].style.color=isOpen?'#111':'#bbb';
+  });
+}
+</script>
