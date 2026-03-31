@@ -1,0 +1,198 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+.tab{flex:1;padding:10px 8px;border:none;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;cursor:pointer;transition:all .2s;line-height:1.4;text-align:center}
+.phrase{padding:9px 14px;border-radius:8px;border:1.5px solid #eee;background:#fff;font-size:12px;color:#555;cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .2s;text-align:left;width:100%}
+.phrase:hover{border-color:#00aaff;background:#f0f9ff}
+.phrase.on{border-color:#00aaff;background:#f0f9ff;color:#111}
+.tag{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:3px 9px;border-radius:20px;display:inline-block}
+</style>
+
+<div style="font-family:'Montserrat',sans-serif;background:#fff;border-radius:16px;padding:2rem">
+
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px">
+    <div>
+      <p style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#00aaff;font-weight:700;margin-bottom:4px">Active Selling · English</p>
+      <h2 style="font-size:21px;font-weight:800;color:#111;line-height:1.25">The three techniques —<br>when and how to use them</h2>
+    </div>
+    <span style="background:#00aaff;color:white;font-size:10px;font-weight:800;padding:5px 12px;border-radius:20px;flex-shrink:0;margin-top:4px">EN</span>
+  </div>
+
+  <!-- Technique tabs -->
+  <div style="display:flex;border-radius:12px;overflow:hidden;border:2px solid #00aaff;margin-bottom:18px">
+    <button class="tab" id="tb0" onclick="tech(0)" style="background:#00aaff;color:white;border-right:1px solid rgba(255,255,255,.3)">Suggestion<br><span style="font-weight:400;opacity:.85">Open order</span></button>
+    <button class="tab" id="tb1" onclick="tech(1)" style="background:#e8f7ff;color:#bbb;border-right:1px solid #b3e0ff">Upselling<br><span style="font-weight:400">Category named</span></button>
+    <button class="tab" id="tb2" onclick="tech(2)" style="background:#e8f7ff;color:#bbb">Cross-selling<br><span style="font-weight:400">After the order</span></button>
+  </div>
+
+  <!-- Technique description -->
+  <div id="tdesc" style="background:#f0f9ff;border-left:4px solid #00aaff;padding:12px 16px;border-radius:0 10px 10px 0;margin-bottom:18px;font-size:12px;color:#444;line-height:1.75"></div>
+
+  <!-- Phrases section -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+    <div>
+      <p style="font-size:10px;color:#00aaff;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px">✓ Phrases that work</p>
+      <div style="display:flex;flex-direction:column;gap:6px" id="good_phrases"></div>
+    </div>
+    <div>
+      <p style="font-size:10px;color:#ff4455;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px">✕ Phrases to avoid</p>
+      <div style="display:flex;flex-direction:column;gap:6px" id="bad_phrases"></div>
+    </div>
+  </div>
+
+  <!-- Live example -->
+  <div style="background:#fafafa;border-radius:12px;padding:14px 16px;border:1.5px solid #eee">
+    <p style="font-size:10px;color:#bbb;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px">Live example · click a phrase to see it in context</p>
+    <div style="display:flex;gap:10px;margin-bottom:10px">
+      <div style="width:34px;height:34px;border-radius:50%;background:#ffaa00;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:white;flex-shrink:0">G</div>
+      <div>
+        <p style="font-size:10px;color:#bbb;font-weight:700;margin-bottom:4px">Guest</p>
+        <div style="background:#f0f0f0;border-radius:0 10px 10px 10px;padding:10px 13px;font-size:12px;color:#333;line-height:1.65;font-style:italic" id="guest_line">—</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <div style="width:34px;height:34px;border-radius:50%;background:#00aaff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:white;flex-shrink:0">Y</div>
+      <div style="flex:1">
+        <p style="font-size:10px;color:#bbb;font-weight:700;margin-bottom:4px">You</p>
+        <div style="background:#e8f7ff;border-radius:0 10px 10px 10px;padding:10px 13px;font-size:12px;color:#111;line-height:1.65;min-height:44px" id="you_line">← Select a phrase on the left to see the full exchange.</div>
+      </div>
+    </div>
+    <div id="why_line" style="display:none;margin-top:10px;background:#fff;border-left:3px solid #00aaff;border-radius:0 8px 8px 0;padding:9px 13px;font-size:11px;color:#555;line-height:1.65"></div>
+  </div>
+
+</div>
+
+<script>
+const data=[
+  {
+    desc:'<strong style="color:#00aaff">Suggestion</strong> — Use when the order is open, vague or unstarted. The guest hasn\'t named a product yet. You step in with a concrete proposal that matches what you\'ve observed. You\'re not replacing their choice — you\'re informing it.',
+    good:[
+      {p:'"If you\'re not sure, our house cocktail tonight is very popular."',
+       guest:'"I\'m not quite sure what I want..."',
+       you:'"If you\'re not sure, our house cocktail tonight is very popular — it\'s a gin, yuzu and basil, very light and fresh. A lot of guests are going for it this evening."',
+       why:'Social proof ("a lot of guests") without pressure. Product named with its profile. Guest still decides freely.'},
+      {p:'"May I suggest something that might suit you?"',
+       guest:'"I\'d like something refreshing but I don\'t know what..."',
+       you:'"May I suggest something that might suit you? Our Cucumber Cooler is gin, fresh cucumber and tonic — very clean, not sweet at all. Does that sound good?"',
+       why:'"May I suggest" is respectful and conditional. It offers guidance without claiming the decision.'},
+      {p:'"Something light and aromatic — can I point you towards...?"',
+       guest:'"Something not too heavy, maybe floral..."',
+       you:'"Something light and aromatic — can I point you towards our Elderflower Spritz? It\'s very delicate, very easy to drink. Beautiful to look at too."',
+       why:'The proposal mirrors the guest\'s own words ("light", "aromatic"). It feels like listening, not selling.'}
+    ],
+    bad:[
+      {p:'"You should try the Negroni, it\'s excellent."',why:'"You should" is an instruction, not a suggestion. It removes the guest\'s sense of choice.'},
+      {p:'"What do you want?"',why:'Blunt and passive at the same time — puts the burden entirely on the guest with no guidance.'},
+      {p:'"Everything on our menu is great."',why:'Vague, unverifiable, and provides zero useful information. It signals a lack of product knowledge.'}
+    ]
+  },
+  {
+    desc:'<strong style="color:#00aaff">Upselling</strong> — Use when the guest has named a category but not a brand or quality level. That gap is your window. Name a better option, justify the difference with one precise argument, mention the price gap immediately after the value — never before.',
+    good:[
+      {p:'"Just so you know, we also have the Hendrick\'s..."',
+       guest:'"A gin and tonic, please."',
+       you:'"Of course — do you have a preference on the gin, or shall I suggest something? Just so you know, we also have the Hendrick\'s — very floral, cucumber notes, two euros more. It makes a real difference."',
+       why:'"Just so you know" is informative in tone, not commercial. Price mentioned after value, not before. Guest keeps full control.'},
+      {p:'"If you\'d like something a step up..."',
+       guest:'"A whisky soda, please."',
+       you:'"Of course. If you\'d like something a step up — we have the Glenfarclas 15, aged in sherry casks. It\'s noticeably richer and smoother. Just three euros more."',
+       why:'"A step up" is neutral language — it doesn\'t imply the original choice was bad. The argument is technical and credible.'},
+      {p:'"The difference with this one is..."',
+       guest:'"A glass of red wine, please."',
+       you:'"Absolutely — we have a very good house red, or if you\'d like something more structured, the Gigondas is exceptional. The difference with this one is the fruit concentration — it\'s a much more generous wine."',
+       why:'Comparison framed as information, not competition. The guest can evaluate the difference and decide.'}
+    ],
+    bad:[
+      {p:'"The cheap one is fine if you want."',why:'Devalues the original choice. The guest feels judged, not guided.'},
+      {p:'"This one is much better, trust me."',why:'"Trust me" replaces argument with authority. It\'s not convincing — it\'s dismissive.'},
+      {p:'"It\'s a bit more expensive but worth it."',why:'"A bit more expensive" opens with the cost before the value. Always demonstrate value first.'}
+    ]
+  },
+  {
+    desc:'<strong style="color:#00aaff">Cross-selling</strong> — Use after the main order is confirmed. Never before. Propose a complementary product — a pairing, a digestif, a side — framed as coherence, not addition. The guest should feel the logic, not the sales intent.',
+    good:[
+      {p:'"Would you like something to go alongside?"',
+       guest:'"A Negroni, please."',
+       you:'"Perfect — a Negroni for you. Would you like something to go alongside? Our marinated olives work beautifully with the bitterness of the Campari."',
+       why:'"To go alongside" signals coherence and pairing logic. The guest doesn\'t feel sold to — they feel looked after.'},
+      {p:'"If you\'d like something to close the evening..."',
+       guest:'"Just the bill when you\'re ready."',
+       you:'"Of course. If you\'d like something to close the evening — we have a very nice aged Calvados tonight, warm and rounded. Or I can bring the bill right away, no problem at all."',
+       why:'Two options offered with equal weight. No pressure. "No problem at all" removes any guilt around declining.'},
+      {p:'"A classic French way to finish..."',
+       guest:'"Two coffees, please."',
+       you:'"Of course. If you\'d like something alongside the coffee — we have a Cognac Rémy Martin VSOP, which pairs beautifully with it. A classic French way to finish a meal."',
+       why:'Cultural context ("classic French way") adds value without commercial framing. It educates and elevates simultaneously.'}
+    ],
+    bad:[
+      {p:'"And with that? Anything else?"',why:'Closed and abrupt. It invites a one-word answer — and that word is usually "no".'},
+      {p:'"You should also try our..."',why:'Cross-selling after the order should never use "should". The guest has already ordered — they don\'t need instructions.'},
+      {p:'"Can I get you more drinks?"',why:'Vague and transactional. No suggestion, no argument, no value — just a prompt to spend more.'}
+    ]
+  }
+];
+
+let curT=0,curP=null;
+
+function tech(n){
+  curT=n;curP=null;
+  [0,1,2].forEach(i=>{
+    const b=document.getElementById('tb'+i);
+    b.style.background=i===n?'#00aaff':'#e8f7ff';
+    b.style.color=i===n?'white':'#bbb';
+  });
+  document.getElementById('tdesc').innerHTML=data[n].desc;
+  buildPhrases(n);
+  document.getElementById('guest_line').textContent='—';
+  document.getElementById('you_line').textContent='← Select a phrase on the left to see the full exchange.';
+  document.getElementById('why_line').style.display='none';
+}
+
+function buildPhrases(n){
+  const gw=document.getElementById('good_phrases');
+  const bw=document.getElementById('bad_phrases');
+  gw.innerHTML='';bw.innerHTML='';
+  data[n].good.forEach((ph,i)=>{
+    const b=document.createElement('button');
+    b.className='phrase';b.id='gp'+i;
+    b.textContent=ph.p;
+    b.onclick=()=>showEx('good',i);
+    gw.appendChild(b);
+  });
+  data[n].bad.forEach((ph,i)=>{
+    const b=document.createElement('button');
+    b.className='phrase';b.id='bp'+i;
+    b.style.borderColor='#ffe0e4';
+    b.style.color='#cc3344';
+    b.onclick=()=>showBad(i);
+    b.textContent=ph.p;
+    bw.appendChild(b);
+  });
+}
+
+function showEx(type,i){
+  document.querySelectorAll('.phrase').forEach(b=>{b.classList.remove('on');b.style.background='#fff';});
+  const btn=document.getElementById('gp'+i);
+  btn.classList.add('on');
+  const ph=data[curT].good[i];
+  document.getElementById('guest_line').textContent=ph.guest;
+  document.getElementById('you_line').innerHTML=ph.you.replace(ph.p.replace(/"/g,'').trim(),`<strong style="color:#00aaff">${ph.p.replace(/"/g,'').trim()}</strong>`);
+  const wy=document.getElementById('why_line');
+  wy.style.display='block';
+  wy.innerHTML='<strong style="color:#00aaff">Why it works :</strong> '+ph.why;
+}
+
+function showBad(i){
+  document.querySelectorAll('.phrase').forEach(b=>{b.classList.remove('on');b.style.background='#fff';});
+  const ph=data[curT].bad[i];
+  document.getElementById('guest_line').textContent='Guest places an order.';
+  document.getElementById('you_line').innerHTML=`<span style="color:#cc3344">${ph.p}</span>`;
+  const wy=document.getElementById('why_line');
+  wy.style.display='block';
+  wy.style.borderColor='#ff4455';
+  wy.innerHTML='<strong style="color:#cc3344">Why it fails :</strong> '+ph.why;
+}
+
+tech(0);
+</script>
