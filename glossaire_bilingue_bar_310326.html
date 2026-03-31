@@ -1,0 +1,210 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+.term{border-bottom:1px solid #f0f0f0;cursor:pointer;transition:background .15s}
+.term:last-child{border-bottom:none}
+.term-header{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;gap:12px}
+.term-header:hover{background:#fafafa}
+.term.open .term-header{background:#fafafa}
+.term-labels{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.term-en{font-size:13px;font-weight:800;color:#111;min-width:110px;flex-shrink:0}
+.term.open .term-en{color:#00aaff}
+.term-fr{font-size:12px;color:#aaa;font-weight:600}
+.term-cat{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:3px 9px;border-radius:20px;flex-shrink:0}
+.cat-t{background:#f0f9ff;color:#00aaff}
+.cat-s{background:#f8f0ff;color:#aa00ff}
+.cat-g{background:#f5fff0;color:#44aa00}
+.cat-m{background:#fff8f0;color:#ff7700}
+.term-arr{color:#ccc;font-size:12px;flex-shrink:0;transition:transform .2s}
+.term.open .term-arr{transform:rotate(90deg);color:#00aaff}
+.term-body{display:none;padding:0 16px 14px 16px;border-top:1px solid #f5f5f5}
+.term.open .term-body{display:block}
+.def-block{background:#f8fcff;border-radius:10px;padding:13px;margin-bottom:9px;border-left:3px solid #00aaff}
+.ex-block{background:#f9f9f9;border-radius:10px;padding:13px}
+.ex-row{display:flex;gap:8px;align-items:flex-start}
+.ex-row+.ex-row{margin-top:6px;padding-top:6px;border-top:1px solid #eee}
+.lang-badge{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:2px}
+.lang-en{background:#00aaff;color:white}
+.lang-fr{background:#f0f0f0;color:#666}
+.ex-text{font-size:12px;color:#444;line-height:1.6;font-style:italic}
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.fbtn{padding:6px 13px;border-radius:20px;border:1.5px solid #eee;background:#fff;color:#bbb;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+.fbtn.active{border-color:#00aaff;background:#00aaff;color:white}
+.search-input{width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid #eee;font-family:inherit;font-size:13px;color:#111;outline:none;margin-bottom:14px}
+.search-input:focus{border-color:#00aaff}
+.count-label{font-size:11px;color:#bbb;font-weight:600;margin-bottom:10px}
+</style>
+
+<div style="font-family:'Montserrat',sans-serif;background:#fff;border-radius:16px;padding:2rem">
+  <p style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#00aaff;font-weight:700;margin-bottom:4px">Sous-partie 5 · Transmission bilingue</p>
+  <h2 style="font-size:20px;font-weight:800;color:#111;margin-bottom:4px">Glossaire bilingue · Bar professionnel</h2>
+  <p style="font-size:12px;color:#bbb;font-weight:600;margin-bottom:16px">Cliquez sur un terme pour voir la définition et les phrases à utiliser</p>
+
+  <input class="search-input" type="text" placeholder="Rechercher un terme..." oninput="filterTerms(this.value)" id="search">
+
+  <div class="filter-bar">
+    <button class="fbtn active" onclick="filterCat('all',this)">Tous</button>
+    <button class="fbtn" onclick="filterCat('t',this)">Technique</button>
+    <button class="fbtn" onclick="filterCat('s',this)">Service</button>
+    <button class="fbtn" onclick="filterCat('g',this)">Garniture</button>
+    <button class="fbtn" onclick="filterCat('m',this)">Mesure</button>
+  </div>
+
+  <p class="count-label" id="count">20 termes</p>
+
+  <div style="border:1.5px solid #eee;border-radius:12px;overflow:hidden" id="list">
+  </div>
+</div>
+
+<script>
+const terms=[
+  {en:'Neat',fr:'Pur / Sans glace',cat:'t',catLabel:'Technique',
+   def:'Spiritueux servi seul, sans glace, sans eau, sans mélange, à température ambiante. Aucune dilution.',
+   exEn:'"I\'ll have the Laphroaig neat, please."',
+   exFr:'"Je souhaite mon whisky pur, sans glace."'},
+  {en:'On the rocks',fr:'Sur glaçons',cat:'t',catLabel:'Technique',
+   def:'Spiritueux ou cocktail servi directement versé sur des glaçons entiers dans un verre bas (rocks glass). Implique une légère dilution progressive.',
+   exEn:'"Could I get a Negroni on the rocks?"',
+   exFr:'"Un Old Fashioned sur glaçons, s\'il vous plaît."'},
+  {en:'Straight up',fr:'Sans glace au service',cat:'t',catLabel:'Technique',
+   def:'Préparation refroidie au shaker ou au verre à mélange avec de la glace, puis servie filtrée sans glace dans le verre. Différent de neat — il y a dilution, mais pas de glace dans le verre final.',
+   exEn:'"A Martini, straight up, please."',
+   exFr:'"Servi sans glace, verre à Martini."'},
+  {en:'Dry',fr:'Dry / Peu de vermouth',cat:'t',catLabel:'Technique',
+   def:'Dans le contexte d\'un Martini, désigne la proportion de vermouth — faible. Ne désigne pas un goût sec au sens général. Un Martini dry contient peu de vermouth sec.',
+   exEn:'"Could I have a dry Martini — very little vermouth?"',
+   exFr:'"Un Martini très sec, juste une trace de vermouth."'},
+  {en:'Extra dry',fr:'Très peu de vermouth',cat:'t',catLabel:'Technique',
+   def:'Encore moins de vermouth qu\'un dry. Dans certains établissements, cela signifie passer le vermouth sur les parois du verre puis le vider avant d\'ajouter le gin.',
+   exEn:'"Extra dry, just rinse the glass with vermouth."',
+   exFr:'"Juste humidifier le verre avec le vermouth, pas plus."'},
+  {en:'Stirred',fr:'Remué',cat:'t',catLabel:'Technique',
+   def:'Cocktail préparé en remuant les ingrédients avec une cuillère dans un verre à mélange avec de la glace. Préserve la texture soyeuse et la transparence. Méthode classique pour le Martini et le Manhattan.',
+   exEn:'"Stirred, not shaken — thirty turns, please."',
+   exFr:'"Préparé au verre à mélange, remué."'},
+  {en:'Shaken',fr:'Shaké / Au shaker',cat:'t',catLabel:'Technique',
+   def:'Cocktail préparé en agitant les ingrédients avec de la glace dans un shaker. Produit une légère aération et une dilution plus rapide. Obligatoire pour les cocktails contenant jus, crème ou œuf.',
+   exEn:'"Shaken hard — I want it well chilled."',
+   exFr:'"Au shaker, bien frappé."'},
+  {en:'A shot',fr:'Une dose',cat:'m',catLabel:'Mesure',
+   def:'Mesure qui varie selon les pays : 25–35 ml au Royaume-Uni, 35 ml en Irlande, 44 ml (1,5 oz) aux États-Unis, 4 cl en France. Toujours clarifier le standard de l\'établissement.',
+   exEn:'"What\'s your standard shot measure here?"',
+   exFr:'"Notre dose standard est de 4 cl."'},
+  {en:'A double',fr:'Une double dose',cat:'m',catLabel:'Mesure',
+   def:'Deux mesures standard du spiritueux. En France, 8 cl. Au Royaume-Uni, 50 ou 70 ml selon les établissements. À confirmer selon le contexte.',
+   exEn:'"Could I have a double Jameson soda?"',
+   exFr:'"Un double Jameson soda, 8 cl de whisky."'},
+  {en:'A splash',fr:'Un trait / Un filet',cat:'m',catLabel:'Mesure',
+   def:'Petite quantité d\'un liquide ajoutée dans un verre — eau gazeuse, jus, sirop. Non mesurée précisément, ajoutée au jugé. Environ 1 à 2 cl.',
+   exEn:'"Just a splash of soda, please."',
+   exFr:'"Un trait de soda, pas plus."'},
+  {en:'A dash',fr:'Un trait d\'amers',cat:'m',catLabel:'Mesure',
+   def:'Micro-mesure obtenue avec un flacon doseur ou une pipette. Environ 0,6 ml. Terme utilisé spécifiquement pour les bitters, les sirops concentrés ou les arômes puissants.',
+   exEn:'"Two dashes of Angostura, please."',
+   exFr:'"Deux traits d\'Angostura."'},
+  {en:'Twist',fr:'Zeste exprimé',cat:'g',catLabel:'Garniture',
+   def:'Zeste d\'agrume dont les huiles essentielles sont exprimées au-dessus du verre en tordant la peau entre les doigts. Les huiles parfument le cocktail avant que le zeste soit déposé sur le bord ou dans le verre.',
+   exEn:'"A lemon twist on the rim, please."',
+   exFr:'"Un zeste de citron exprimé sur le verre."'},
+  {en:'No garnish',fr:'Sans garniture',cat:'g',catLabel:'Garniture',
+   def:'Le cocktail est servi sans aucun élément de décoration ou de garniture. Information à transmettre explicitement à la production pour éviter l\'ajout automatique selon le standard de la recette.',
+   exEn:'"No garnish, please — just the drink."',
+   exFr:'"Sans garniture, directement dans le verre."'},
+  {en:'On the side',fr:'À part / Séparément',cat:'s',catLabel:'Service',
+   def:'L\'élément demandé — glace, sirop, eau — est servi dans un contenant séparé plutôt que directement dans le verre. Permet au client de doser lui-même.',
+   exEn:'"Could I have the simple syrup on the side?"',
+   exFr:'"Le sirop de sucre à part, s\'il vous plaît."'},
+  {en:'No ice',fr:'Sans glace',cat:'s',catLabel:'Service',
+   def:'Aucun glaçon dans le verre. Information prioritaire à transmettre. Ne pas confondre avec neat — no ice peut s\'appliquer à n\'importe quel cocktail ou boisson longue.',
+   exEn:'"A Coca-Cola, no ice please."',
+   exFr:'"Sans glace dans le verre."'},
+  {en:'Light ice',fr:'Peu de glace',cat:'s',catLabel:'Service',
+   def:'Quelques glaçons seulement, moins que la quantité standard de l\'établissement. Le client souhaite moins de dilution ou plus d\'espace pour la boisson.',
+   exEn:'"Light ice on that gin tonic, please."',
+   exFr:'"Peu de glaçons, pas un verre plein."'},
+  {en:'Virgin / Mocktail',fr:'Sans alcool',cat:'s',catLabel:'Service',
+   def:'Version d\'un cocktail préparée sans alcool, en substituant les spiritueux par des jus, sirops ou alternatives non alcoolisées. Virgin désigne souvent un classique adapté, mocktail une création originale sans alcool.',
+   exEn:'"Do you have a virgin Mojito on the menu?"',
+   exFr:'"Vous avez une version sans alcool de ce cocktail ?"'},
+  {en:'Nut allergy',fr:'Allergie aux noix',cat:'s',catLabel:'Service',
+   def:'Contrainte de santé prioritaire. Certains sirops, liqueurs ou garnitures contiennent des traces de noix ou d\'amande. Information à transmettre en tête de commande, avec confirmation explicite du récepteur.',
+   exEn:'"Just to flag — the guest has a nut allergy."',
+   exFr:'"Allergie aux noix — à signaler en production."'},
+  {en:'Room temperature',fr:'À température ambiante',cat:'s',catLabel:'Service',
+   def:'Le produit est servi sans refroidissement, sans glace, sans passage préalable au froid. Concerne certains vins rouges, cognacs, certaines bières artisanales.',
+   exEn:'"The red wine at room temperature, please."',
+   exFr:'"Le vin rouge à température ambiante, pas frappé."'},
+  {en:'Well chilled',fr:'Bien frappé / Très froid',cat:'s',catLabel:'Service',
+   def:'Le verre ou la préparation doit être très froid — soit par un shake prolongé, soit par passage du verre au congélateur. Le client insiste sur la température de service.',
+   exEn:'"Make sure it\'s well chilled — very cold glass."',
+   exFr:'"Bien frappé, verre glacé si possible."'}
+];
+
+let currentCat='all';
+let currentSearch='';
+
+function catClass(c){return 'cat-'+c;}
+function catStyle(c){const s={t:'#f0f9ff;color:#00aaff',s:'#f8f0ff;color:#aa00ff',g:'#f5fff0;color:#44aa00',m:'#fff8f0;color:#ff7700'};return s[c];}
+
+function buildList(filtered){
+  const list=document.getElementById('list');
+  list.innerHTML='';
+  document.getElementById('count').textContent=filtered.length+' terme'+(filtered.length>1?'s':'');
+  if(filtered.length===0){list.innerHTML='<p style="padding:20px;text-align:center;color:#bbb;font-size:13px">Aucun terme trouvé</p>';return;}
+  filtered.forEach((t,idx)=>{
+    const div=document.createElement('div');
+    div.className='term';
+    div.id='term_'+idx;
+    div.innerHTML=`
+      <div class="term-header" onclick="toggleTerm(${idx})">
+        <div class="term-labels">
+          <span class="term-en">${t.en}</span>
+          <span class="term-fr">${t.fr}</span>
+        </div>
+        <span class="term-cat" style="background:${catStyle(t.cat).split(';')[0].split(':')[1]};color:${catStyle(t.cat).split(';')[1].split(':')[1]}">${t.catLabel}</span>
+        <span class="term-arr">▶</span>
+      </div>
+      <div class="term-body">
+        <div class="def-block">
+          <p style="font-size:9px;color:#00aaff;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px">Définition</p>
+          <p style="font-size:12px;color:#333;line-height:1.7">${t.def}</p>
+        </div>
+        <div class="ex-block">
+          <p style="font-size:9px;color:#888;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px">Phrases à utiliser</p>
+          <div class="ex-row"><span class="lang-badge lang-en">EN</span><p class="ex-text">${t.exEn}</p></div>
+          <div class="ex-row"><span class="lang-badge lang-fr">FR</span><p class="ex-text">${t.exFr}</p></div>
+        </div>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+function toggleTerm(idx){
+  const el=document.getElementById('term_'+idx);
+  el.classList.toggle('open');
+}
+
+function getFiltered(){
+  return terms.filter(t=>{
+    const matchCat=currentCat==='all'||t.cat===currentCat;
+    const q=currentSearch.toLowerCase();
+    const matchSearch=!q||t.en.toLowerCase().includes(q)||t.fr.toLowerCase().includes(q)||t.def.toLowerCase().includes(q);
+    return matchCat&&matchSearch;
+  });
+}
+
+function filterCat(cat,btn){
+  currentCat=cat;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildList(getFiltered());
+}
+
+function filterTerms(val){
+  currentSearch=val;
+  buildList(getFiltered());
+}
+
+buildList(terms);
+</script>
