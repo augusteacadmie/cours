@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mini-fiche de l'épreuve blanche · L'essentiel</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:20px;--s6:24px;--s7:32px;--s8:40px;
+  --r1:8px;--r2:12px;--r3:16px;--r4:20px;--rf:999px;
+  --e1:0 1px 3px rgba(0,0,0,.06);--e2:0 4px 16px rgba(0,0,0,.08);--e3:0 12px 32px -8px rgba(0,0,0,.22);
+  --ink:#323232;--ink-body:#323232;--ink-soft:#6B6560;--line:rgba(0,0,0,.10);
+  --surface:#FAFAFA;
+  --paper:#F2F3F5;--ac:#64748B;--on-ac:#FAFAFA;--ac-bg:#E1E5EA;--ac-bd:#7A899F;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:auto;min-height:100dvh;font-family:'Montserrat',sans-serif;
+  overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
+/* Racine reduite de 20 % (design-tokens.md §1) : le reglage precedent
+   (17-22px) poussait le contenu hors de l'ecran sur les formats moyens.
+   Corps de texte effectif : 13 a 17,5px. Aucun token individuel retouche. */
+html{font-size:calc(clamp(13.5px, 0.84vw + 8px, 17.5px) * var(--z, 1))}
+body{background:var(--paper);padding:var(--s5);
+  padding-bottom:calc(var(--s8) + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;gap:var(--s4);color:var(--ink-body)}
+@media (min-width:881px){
+  html,body{height:100%;min-height:0;overflow:hidden}
+  body{padding:var(--s7);padding-bottom:var(--s7)}
+}
+html.zoomed,html.zoomed body{height:auto;min-height:100%;overflow:auto}
+.ico{width:1.25em;height:1.25em;flex-shrink:0;fill:none;stroke:currentColor;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s4);
+  flex-wrap:wrap}
+.h1{font-size:1.5rem;font-weight:800;color:var(--ink);margin-bottom:var(--s1);
+  letter-spacing:-.01em;line-height:1.2}
+.sub{font-size:0.85rem;font-weight:500;color:var(--ink-soft)}
+.top-right{display:flex;align-items:center;gap:var(--s3);flex-wrap:wrap}
+.mini-badge{display:inline-flex;align-items:center;gap:var(--s2);
+  background:var(--ac);color:var(--on-ac);border-radius:var(--rf);
+  padding:var(--s2) var(--s4);font-size:0.68rem;font-weight:800;
+  letter-spacing:.14em;text-transform:uppercase}
+.zoom-ctrl{display:flex;align-items:center;gap:2px;background:var(--surface);
+  border:1.5px solid var(--line);border-radius:var(--r2);padding:3px;flex-shrink:0}
+.zoom-btn,.zoom-val{font-family:inherit;border:none;background:transparent;cursor:pointer;
+  color:var(--ink-soft);font-weight:800;transition:background .15s;border-radius:var(--r1)}
+.zoom-btn{width:1.6rem;height:1.6rem;font-size:0.95rem;line-height:1;
+  display:flex;align-items:center;justify-content:center}
+.zoom-btn:hover,.zoom-val:hover{background:var(--ac-bg);color:var(--ink)}
+.zoom-val{min-width:2.6rem;height:1.6rem;font-size:0.68rem;letter-spacing:.02em}
+
+.tabs{display:flex;gap:var(--s2);flex-wrap:wrap}
+.tab{font-family:inherit;font-size:0.95rem;font-weight:700;padding:var(--s3) var(--s6);
+  min-height:48px;border:1.5px solid var(--line);background:var(--surface);cursor:pointer;
+  color:var(--ink);border-radius:var(--r2);transition:background .15s,border-color .15s;
+  display:inline-flex;align-items:center;gap:var(--s2)}
+.tab:hover{background:var(--ac-bg)}
+.tab.is-on{background:var(--ac);color:var(--on-ac);border-color:var(--ac)}
+.tab:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+.panel{display:none;flex:1;flex-direction:column;gap:var(--s4);min-height:0}
+.panel.is-on{display:flex;animation:fadeUp .3s both}
+.grid{flex:1;display:grid;gap:var(--s4);grid-template-columns:repeat(2,1fr);
+  align-content:stretch;min-height:0}
+@media (max-width:880px){.grid{grid-template-columns:1fr}}
+.point{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r4);
+  padding:var(--s5);display:flex;flex-direction:column;gap:var(--s2);box-shadow:var(--e1);
+  animation:popIn .4s both;min-height:0}
+.point:nth-child(2){animation-delay:.06s}
+.point:nth-child(3){animation-delay:.12s}
+.point:nth-child(4){animation-delay:.18s}
+.pt-hd{display:flex;align-items:center;gap:var(--s3)}
+.pt-ico{width:2.1rem;height:2.1rem;border-radius:var(--r1);background:var(--ac-bg);
+  color:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pt-ico .ico{width:1.2rem;height:1.2rem;stroke-width:1.7}
+.pt-ttl{font-size:1.25rem;font-weight:800;color:var(--ink);line-height:1.2;letter-spacing:-.01em}
+.pt-txt{font-size:0.95rem;font-weight:500;color:var(--ink-body);line-height:1.6;
+  overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--ac-bd) transparent}
+.pt-txt::-webkit-scrollbar{width:4px}
+.pt-txt::-webkit-scrollbar-thumb{background:var(--ac-bd);border-radius:2px}
+.pt-txt strong{font-weight:700;color:var(--ink)}
+
+.keep{background:var(--ac);color:var(--on-ac);border-radius:var(--r3);
+  padding:var(--s4) var(--s6);display:flex;align-items:center;gap:var(--s4);flex-shrink:0}
+.keep .ico{width:1.6rem;height:1.6rem;stroke-width:1.7}
+.keep-lbl{font-size:0.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  opacity:.75;margin-bottom:2px}
+.keep-txt{font-size:0.95rem;font-weight:700;line-height:1.45}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<!--ICONS:START-->
+<svg style="display:none" aria-hidden="true">
+<symbol id="ico-balance" viewBox="0 0 24 24"><title>Balance</title><rect x="2.8" y="7.2" width="18.4" height="2.8" rx="1.4"/><path d="M5.6 10v7.4a2.2 2.2 0 0 0 2.2 2.2h8.4a2.2 2.2 0 0 0 2.2-2.2V10"/><path d="M9 13.6h6"/><path d="M9 16.4h3.4"/></symbol>
+<symbol id="ico-cadenas" viewBox="0 0 24 24"><title>Verrouillé</title><rect x="4.6" y="10.4" width="14.8" height="10.2" rx="2.2"/><path d="M8.2 10.4V7.6a3.8 3.8 0 0 1 7.6 0v2.8"/></symbol>
+<symbol id="ico-chercher" viewBox="0 0 24 24"><title>Rechercher</title><circle cx="10.5" cy="10.5" r="6.8"/><path d="m15.4 15.4 5.1 5.1"/></symbol>
+<symbol id="ico-dossier" viewBox="0 0 24 24"><title>Dossier</title><path d="M2.8 6.6a2 2 0 0 1 2-2h4l2.4 2.8h8a2 2 0 0 1 2 2v8.6a2 2 0 0 1-2 2H4.8a2 2 0 0 1-2-2Z"/></symbol>
+<symbol id="ico-epingle" viewBox="0 0 24 24"><title>Épingler</title><path d="M9 3.6h6l-.8 6 3.4 3.2H6.4L9.8 9.6Z"/><path d="M12 12.8v7.6"/></symbol>
+<symbol id="ico-facture" viewBox="0 0 24 24"><title>Facture</title><path d="M4.6 2.8h14.8v18.4l-2.4-1.6-2.4 1.6-2.6-1.6-2.6 1.6-2.4-1.6-2.4 1.6Z"/><path d="M8 8h8M8 12h8M8 15.6h4.4"/></symbol>
+<symbol id="ico-filtrer" viewBox="0 0 24 24"><title>Filtrer</title><path d="M3.4 4.6h17.2l-6.6 7.8v6.4l-4 2.2v-8.6Z"/></symbol>
+<symbol id="ico-fleche-droite" viewBox="0 0 24 24"><title>Flèche droite</title><path d="M3.5 12h17"/><path d="M14 5.5 20.5 12 14 18.5"/></symbol>
+<symbol id="ico-graphique-barres" viewBox="0 0 24 24"><title>Graphique barres</title><path d="M3.4 20.6h17.2"/><rect x="5.4" y="12.4" width="3.6" height="6"/><rect x="10.2" y="7.6" width="3.6" height="10.8"/><rect x="15" y="10" width="3.6" height="8.4"/></symbol>
+<symbol id="ico-horloge-pointeuse" viewBox="0 0 24 24"><title>Pointeuse</title><circle cx="12" cy="12" r="9"/><path d="M12 6.8V12l3.6 2.2"/></symbol>
+<symbol id="ico-mail" viewBox="0 0 24 24"><title>Courriel</title><rect x="2.6" y="5" width="18.8" height="14" rx="2.2"/><path d="m2.6 7 9.4 6.4L21.4 7"/></symbol>
+<symbol id="ico-minuteur" viewBox="0 0 24 24"><title>Minuteur</title><circle cx="12" cy="13.2" r="7.8"/><path d="M12 9v4.2l2.8 1.8"/><path d="M9.4 2.6h5.2"/></symbol>
+<symbol id="ico-ordinateur" viewBox="0 0 24 24"><title>Ordinateur</title><rect x="2.8" y="4.4" width="18.4" height="12" rx="2"/><path d="M2 19.6h20"/></symbol>
+<symbol id="ico-tableur" viewBox="0 0 24 24"><title>Tableur</title><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14.6h18"/><path d="M9 4v16M15 4v16"/></symbol>
+<symbol id="ico-valider" viewBox="0 0 24 24"><title>Valider</title><path d="m3.5 12.5 5.5 5.5L20.5 6.5"/></symbol>
+</svg>
+<!--ICONS:END-->
+
+<div class="top">
+  <div class="ttl">
+    <div class="h1">Mini-fiche méthode et répartition du temps</div>
+    <div class="sub">Trois onglets, douze points · à relire juste avant une épreuve blanche de quarante-cinq minutes</div>
+  </div>
+  <div class="top-right">
+    <span class="mini-badge">
+      <svg class="ico" aria-hidden="true"><use href="#ico-epingle"/></svg> L'essentiel
+    </span>
+    <div class="zoom-ctrl" role="group" aria-label="Zoom">
+      <button class="zoom-btn" id="zoomOut" aria-label="Réduire" title="Réduire">−</button>
+      <button class="zoom-val" id="zoomReset" aria-label="Réinitialiser le zoom" title="Réinitialiser">100%</button>
+      <button class="zoom-btn" id="zoomIn" aria-label="Agrandir" title="Agrandir">+</button>
+    </div>
+  </div>
+</div>
+
+<div class="tabs" role="tablist" id="tabs"></div>
+<div id="panels" style="display:flex;flex-direction:column;flex:1;min-height:0"></div>
+
+<script>
+let AC;
+const ga=()=>{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();return AC};
+function tn(f1,f2,d,v,dl,tp){try{const a=ga(),o=a.createOscillator(),g=a.createGain();
+o.connect(g);g.connect(a.destination);o.type=tp||'sine';const t=a.currentTime+(dl||0);
+o.frequency.setValueAtTime(f1,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d*.8);
+g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+o.start(t);o.stop(t+d+.02)}catch(e){}}
+function ns(lp,v,d,dl){try{const a=ga(),buf=a.createBuffer(1,~~(a.sampleRate*d),a.sampleRate),
+dat=buf.getChannelData(0);for(let i=0;i<dat.length;i++)dat[i]=Math.random()*2-1;
+const src=a.createBufferSource();src.buffer=buf;const f=a.createBiquadFilter();
+f.type='bandpass';f.frequency.value=lp;f.Q.value=2;const g=a.createGain();
+const t=a.currentTime+(dl||0);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.04);
+g.gain.linearRampToValueAtTime(0,t+d);src.connect(f);f.connect(g);g.connect(a.destination);
+src.start(t);src.stop(t+d+.05)}catch(e){}}
+document.addEventListener('click',()=>{try{if(AC&&AC.state==='suspended')AC.resume()}catch(e){}},{once:true});
+/* Gamification minimale imposée par le type 13 : un son doux, aucun score. */
+const SNDS={doux:()=>tn(880,1100,.14,.03,0,'sine')};
+
+const ONGLETS=[
+ {id:"temps",label:"Le temps",ico:"ico-minuteur",keep:"Une tâche sans heure de fin finit tard : chaque production reçoit la sienne, écrite avant de commencer.",points:[
+   {ico:"ico-horloge-pointeuse",ttl:"Le budget de base",txt:"Les quarante-cinq minutes se répartissent en quatre temps : <strong>cinq</strong> de lecture et d'organisation, <strong>dix-sept</strong> pour la première production, <strong>seize</strong> pour la seconde, <strong>sept</strong> de contrôles et d'enregistrement. Cette base s'ajuste après l'inventaire : un rapport de cinq journées et une demande simple n'appellent pas la répartition d'un rapport d'une journée et d'un séminaire à six prestations."},
+   {ico:"ico-epingle",ttl:"Les heures de bascule",txt:"Avant la première saisie, le brouillon reçoit en tête l'heure de fin de chaque temps : la <strong>cinquième</strong>, la <strong>vingt-deuxième</strong>, la <strong>trente-huitième</strong> et la <strong>quarante-cinquième</strong> minute avec la base. Pendant la mise en situation, personne ne signale qu'il est temps de changer de tâche : ces heures écrites sont le seul repère, et elles se tiennent jusqu'au bout."},
+   {ico:"ico-fleche-droite",ttl:"Trois cas à la bascule",txt:"Si la tâche est <strong>remettable</strong>, toutes lignes traitées, on bascule sans hésiter. S'il manque une <strong>étape courte</strong>, une ou deux minutes comme le commentaire, on la termine et l'on retire ces minutes au soin de la tâche suivante, jamais à ses contrôles. S'il manque une <strong>étape longue</strong>, une source entière à rapprocher, on note ce qui reste sur le brouillon, on bascule et l'on y revient ensuite."},
+   {ico:"ico-cadenas",ttl:"Les sept minutes protégées",txt:"Le temps des contrôles transforme deux brouillons en deux productions remises. À l'épreuve blanche n° 4, une apprentie y découvre un devis à <strong>2 995,20 €</strong> : la formule du transfert des bagages, recopiée, avait étendu le taux de 20 % aux autres lignes. Corrigé, recollé en valeurs, le total revient à <strong>2 761,60 €</strong>. Sans ces minutes, le devis partait avec 233,60 € de trop."}
+  ]},
+ {id:"methode",label:"La méthode",ico:"ico-tableur",keep:"Rapprocher toutes les sources d'abord, corriger ensuite, et écrire chaque correction au moment où on la fait.",points:[
+   {ico:"ico-ordinateur",ttl:"Le poste avant tout",txt:"Les deux premières minutes ouvrent le <strong>classeur et le traitement de texte côte à côte</strong>, enregistrent les deux fichiers sous les noms demandés, vérifient séparateur décimal, format monétaire et format de date, rangent les relevés dans l'ordre où ils serviront. Aucune autre application ne s'ouvre ensuite. Un poste organisé se reconnaît à ce qu'aucun geste ne s'y répète deux fois en quarante-cinq minutes."},
+   {ico:"ico-chercher",ttl:"L'ordre de mise à jour",txt:"Chaque relevé se <strong>rapproche</strong> des cellules du classeur, ligne par ligne, et chaque écart se marque d'une couleur de fond sans être corrigé. Viennent ensuite les contrôles rapides, totaux, bornes des taux, unités occupées face aux disponibles, puis les <strong>corrections</strong>, le recalcul par les formules et le <strong>commentaire</strong>. Corriger au fil de la lecture fait perdre le fil du rapprochement et oublier une ligne."},
+   {ico:"ico-filtrer",ttl:"Trois sorts pour une donnée",txt:"Une donnée <strong>erronée</strong> se corrige d'après la source qui fait foi. Une donnée <strong>manquante</strong> se reconstitue quand une autre pièce du dossier le permet, comme un chiffre de bar retrouvé dans le rapport de caisse. Introuvable, elle se <strong>signale</strong>, avec la source qui devra la fournir. Une recherche vaine se borne à deux minutes : au-delà, on signale et le travail continue."},
+   {ico:"ico-mail",ttl:"La réponse en quatre temps",txt:"<strong>Analyser</strong> la demande : dates, personnes, chambres, prestations, budget, délai. <strong>Vérifier</strong> la disponibilité de chaque nuit sur le planning. <strong>Chiffrer</strong> au tableur, ligne par ligne, avec le taux de chaque prestation et la taxe de séjour à part. <strong>Rédiger</strong> dans l'ordre de la procédure, jusqu'aux conditions d'acompte et d'option. Les montants passent du tableur à la réponse par un collage des valeurs."}
+  ]},
+ {id:"controles",label:"Contrôles et ordre",ico:"ico-valider",keep:"Quand la consigne n'impose rien, on commence par la production qui perd le plus de valeur si elle reste inachevée.",points:[
+   {ico:"ico-graphique-barres",ttl:"Le rapport, à la fin",txt:"Côté chiffres : aucune cellule en erreur, aucun <strong>taux au-dessus de cent pour cent</strong>, des totaux égaux à la somme de leurs lignes, ce qui se voit d'un coup d'œil sur la feuille entière. Côté commentaire : présent, daté, citant <strong>chaque donnée corrigée ou reconstituée</strong> avec sa source et sa valeur d'origine. Sans lui, le rapport paraît identique à celui qu'on a reçu."},
+   {ico:"ico-facture",ttl:"La réponse et les fichiers",txt:"L'offre se relit face à la demande : dates, nombre de personnes et de chambres. Chaque montant se relit face à la <strong>cellule du tableur</strong> dont il provient, chaque ligne face à son taux, la taxe de séjour mentionnée à part, les conditions d'acompte et d'option présentes. Puis les deux fichiers s'enregistrent sous les noms demandés et se <strong>rouvrent</strong> pour vérifier qu'ils s'ouvrent."},
+   {ico:"ico-balance",ttl:"Choisir l'ordre",txt:"Le critère : laquelle des deux productions perd le plus de valeur si elle reste inachevée ? Un rapport dont trois lignes restent à traiter garde ses corrections visibles ; une réponse sans offre ou sans conditions <strong>ne s'envoie pas</strong>. D'où, souvent, la réponse d'abord. Un rapport très court, finissable en dix minutes, ou une maîtrise nettement plus grande de l'une des tâches peuvent inverser ce choix."},
+   {ico:"ico-dossier",ttl:"Le journal d'erreurs",txt:"Après chaque épreuve blanche, chaque erreur prend une ligne et quatre colonnes : l'erreur, sa famille, sa <strong>cause</strong> et la <strong>parade</strong> retenue. La cause est la colonne la plus utile : une même erreur de TVA peut venir d'un taux ignoré, d'une formule mal recopiée ou d'un contrôle sauté. Au bout de quatre ou cinq épreuves, deux ou trois erreurs reviennent : les contrôles finaux les visent en priorité."}
+  ]}
+];
+
+const $=id=>document.getElementById(id);
+let actif=0;
+
+function peint(){
+  $('tabs').innerHTML=ONGLETS.map((o,i)=>
+    `<button class="tab${i===actif?' is-on':''}" role="tab" data-i="${i}"
+       aria-selected="${i===actif}" aria-controls="p${o.id}">
+      <svg class="ico" aria-hidden="true"><use href="#${o.ico}"/></svg>${o.label}
+    </button>`).join('');
+  $('panels').innerHTML=ONGLETS.map((o,i)=>
+    `<section class="panel${i===actif?' is-on':''}" id="p${o.id}" role="tabpanel">
+      <div class="grid">${o.points.map(p=>
+        `<div class="point">
+          <div class="pt-hd">
+            <span class="pt-ico"><svg class="ico" aria-hidden="true"><use href="#${p.ico}"/></svg></span>
+            <span class="pt-ttl">${p.ttl}</span>
+          </div>
+          <div class="pt-txt">${p.txt}</div>
+        </div>`).join('')}</div>
+      <div class="keep">
+        <svg class="ico" aria-hidden="true"><use href="#ico-epingle"/></svg>
+        <div><div class="keep-lbl">À retenir</div><div class="keep-txt">${o.keep}</div></div>
+      </div>
+    </section>`).join('');
+  document.querySelectorAll('.tab').forEach(b=>{
+    b.addEventListener('click',()=>{actif=+b.dataset.i;SNDS.doux();peint()});
+    b.addEventListener('keydown',e=>{
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+        e.preventDefault();
+        actif=(actif+(e.key==='ArrowRight'?1:ONGLETS.length-1))%ONGLETS.length;
+        SNDS.doux();peint();
+        document.querySelectorAll('.tab')[actif].focus();
+      }});
+  });
+}
+
+(function(){
+  const STEPS=[0.8,0.9,1,1.1,1.25,1.4,1.6];let i=STEPS.indexOf(1);
+  const root=document.documentElement,val=$('zoomReset');
+  function apply(){const z=STEPS[i];root.style.setProperty('--z',z);
+    root.classList.toggle('zoomed',z>1);if(val)val.textContent=Math.round(z*100)+'%'}
+  $('zoomIn').addEventListener('click',()=>{i=Math.min(i+1,STEPS.length-1);apply()});
+  $('zoomOut').addEventListener('click',()=>{i=Math.max(i-1,0);apply()});
+  val.addEventListener('click',()=>{i=STEPS.indexOf(1);apply()});apply()})();
+
+peint();SNDS.doux();
+</script>
+</body>
+</html>

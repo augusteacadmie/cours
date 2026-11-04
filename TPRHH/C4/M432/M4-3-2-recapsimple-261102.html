@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Indicateurs de la réception · L'essentiel</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:20px;--s6:24px;--s7:32px;--s8:40px;
+  --r1:8px;--r2:12px;--r3:16px;--r4:20px;--rf:999px;
+  --e1:0 1px 3px rgba(0,0,0,.06);--e2:0 4px 16px rgba(0,0,0,.08);--e3:0 12px 32px -8px rgba(0,0,0,.22);
+  --ink:#323232;--ink-body:#323232;--ink-soft:#6B6560;--line:rgba(0,0,0,.10);
+  --surface:#FAFAFA;
+  --paper:#F2F3F5;--ac:#64748B;--on-ac:#FAFAFA;--ac-bg:#E1E5EA;--ac-bd:#7A899F;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:auto;min-height:100dvh;font-family:'Montserrat',sans-serif;
+  overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
+/* Racine reduite de 20 % (design-tokens.md §1) : le reglage precedent
+   (17-22px) poussait le contenu hors de l'ecran sur les formats moyens.
+   Corps de texte effectif : 13 a 17,5px. Aucun token individuel retouche. */
+html{font-size:calc(clamp(13.5px, 0.84vw + 8px, 17.5px) * var(--z, 1))}
+body{background:var(--paper);padding:var(--s5);
+  padding-bottom:calc(var(--s8) + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;gap:var(--s4);color:var(--ink-body)}
+@media (min-width:881px){
+  html,body{height:100%;min-height:0;overflow:hidden}
+  body{padding:var(--s7);padding-bottom:var(--s7)}
+}
+html.zoomed,html.zoomed body{height:auto;min-height:100%;overflow:auto}
+.ico{width:1.25em;height:1.25em;flex-shrink:0;fill:none;stroke:currentColor;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s4);
+  flex-wrap:wrap}
+.h1{font-size:1.5rem;font-weight:800;color:var(--ink);margin-bottom:var(--s1);
+  letter-spacing:-.01em;line-height:1.2}
+.sub{font-size:0.85rem;font-weight:500;color:var(--ink-soft)}
+.top-right{display:flex;align-items:center;gap:var(--s3);flex-wrap:wrap}
+.mini-badge{display:inline-flex;align-items:center;gap:var(--s2);
+  background:var(--ac);color:var(--on-ac);border-radius:var(--rf);
+  padding:var(--s2) var(--s4);font-size:0.68rem;font-weight:800;
+  letter-spacing:.14em;text-transform:uppercase}
+.zoom-ctrl{display:flex;align-items:center;gap:2px;background:var(--surface);
+  border:1.5px solid var(--line);border-radius:var(--r2);padding:3px;flex-shrink:0}
+.zoom-btn,.zoom-val{font-family:inherit;border:none;background:transparent;cursor:pointer;
+  color:var(--ink-soft);font-weight:800;transition:background .15s;border-radius:var(--r1)}
+.zoom-btn{width:1.6rem;height:1.6rem;font-size:0.95rem;line-height:1;
+  display:flex;align-items:center;justify-content:center}
+.zoom-btn:hover,.zoom-val:hover{background:var(--ac-bg);color:var(--ink)}
+.zoom-val{min-width:2.6rem;height:1.6rem;font-size:0.68rem;letter-spacing:.02em}
+
+.tabs{display:flex;gap:var(--s2);flex-wrap:wrap}
+.tab{font-family:inherit;font-size:0.95rem;font-weight:700;padding:var(--s3) var(--s6);
+  min-height:48px;border:1.5px solid var(--line);background:var(--surface);cursor:pointer;
+  color:var(--ink);border-radius:var(--r2);transition:background .15s,border-color .15s;
+  display:inline-flex;align-items:center;gap:var(--s2)}
+.tab:hover{background:var(--ac-bg)}
+.tab.is-on{background:var(--ac);color:var(--on-ac);border-color:var(--ac)}
+.tab:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+.panel{display:none;flex:1;flex-direction:column;gap:var(--s4);min-height:0}
+.panel.is-on{display:flex;animation:fadeUp .3s both}
+.grid{flex:1;display:grid;gap:var(--s4);grid-template-columns:repeat(2,1fr);
+  align-content:stretch;min-height:0}
+@media (max-width:880px){.grid{grid-template-columns:1fr}}
+.point{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r4);
+  padding:var(--s5);display:flex;flex-direction:column;gap:var(--s2);box-shadow:var(--e1);
+  animation:popIn .4s both;min-height:0}
+.point:nth-child(2){animation-delay:.06s}
+.point:nth-child(3){animation-delay:.12s}
+.point:nth-child(4){animation-delay:.18s}
+.pt-hd{display:flex;align-items:center;gap:var(--s3)}
+.pt-ico{width:2.1rem;height:2.1rem;border-radius:var(--r1);background:var(--ac-bg);
+  color:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pt-ico .ico{width:1.2rem;height:1.2rem;stroke-width:1.7}
+.pt-ttl{font-size:1.25rem;font-weight:800;color:var(--ink);line-height:1.2;letter-spacing:-.01em}
+.pt-txt{font-size:0.95rem;font-weight:500;color:var(--ink-body);line-height:1.6;
+  overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--ac-bd) transparent}
+.pt-txt::-webkit-scrollbar{width:4px}
+.pt-txt::-webkit-scrollbar-thumb{background:var(--ac-bd);border-radius:2px}
+.pt-txt strong{font-weight:700;color:var(--ink)}
+
+.keep{background:var(--ac);color:var(--on-ac);border-radius:var(--r3);
+  padding:var(--s4) var(--s6);display:flex;align-items:center;gap:var(--s4);flex-shrink:0}
+.keep .ico{width:1.6rem;height:1.6rem;stroke-width:1.7}
+.keep-lbl{font-size:0.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  opacity:.75;margin-bottom:2px}
+.keep-txt{font-size:0.95rem;font-weight:700;line-height:1.45}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<!--ICONS:START-->
+<svg style="display:none" aria-hidden="true">
+<symbol id="ico-balance" viewBox="0 0 24 24"><title>Balance</title><rect x="2.8" y="7.2" width="18.4" height="2.8" rx="1.4"/><path d="M5.6 10v7.4a2.2 2.2 0 0 0 2.2 2.2h8.4a2.2 2.2 0 0 0 2.2-2.2V10"/><path d="M9 13.6h6"/><path d="M9 16.4h3.4"/></symbol>
+<symbol id="ico-calculatrice" viewBox="0 0 24 24"><title>Calculatrice</title><rect x="4.4" y="2.6" width="15.2" height="18.8" rx="2.2"/><rect x="7.4" y="5.6" width="9.2" height="3.4" rx="0.8"/><path d="M8 12.4v.1M12 12.4v.1M16 12.4v.1M8 16v.1M12 16v.1M16 16v.1M12 18.6v.1M8 18.6v.1M16 18.6v.1"/></symbol>
+<symbol id="ico-calendrier" viewBox="0 0 24 24"><title>Calendrier</title><rect x="3.2" y="5" width="17.6" height="16" rx="2.2"/><path d="M3.2 9.8h17.6"/><path d="M8 3v4M16 3v4"/><path d="M7.6 13.6h2M11 13.6h2M14.4 13.6h2M7.6 17h2M11 17h2"/></symbol>
+<symbol id="ico-carte-lieu" viewBox="0 0 24 24"><title>Carte</title><path d="m2.8 6 6-2.4v14.8l-6 2.4Z"/><path d="m8.8 3.6 6.4 2.6v14.8L8.8 18.4Z"/><path d="m15.2 6.2 6-2.6v14.8l-6 2.6Z"/></symbol>
+<symbol id="ico-cible" viewBox="0 0 24 24"><title>Objectif</title><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.4"/><circle cx="12" cy="12" r="1.8"/></symbol>
+<symbol id="ico-epingle" viewBox="0 0 24 24"><title>Épingler</title><path d="M9 3.6h6l-.8 6 3.4 3.2H6.4L9.8 9.6Z"/><path d="M12 12.8v7.6"/></symbol>
+<symbol id="ico-euro" viewBox="0 0 24 24"><title>Euro</title><circle cx="12" cy="12" r="9"/><path d="M15.6 8.4a4.4 4.4 0 0 0-6.8 3.6 4.4 4.4 0 0 0 6.8 3.6"/><path d="M7.4 10.8h5.4M7.4 13.4h5.4"/></symbol>
+<symbol id="ico-femme-homme" viewBox="0 0 24 24"><title>Une femme et un homme</title><circle cx="7.4" cy="6.6" r="3"/><path d="M7.4 10c-2.2 0-3.2 1.4-3.7 3.4L2.4 19.4h10L10.9 13.4C10.4 11.4 9.6 10 7.4 10Z"/><circle cx="16.8" cy="6.6" r="3"/><path d="M12.6 19.4v-4.6a4.2 4.2 0 0 1 8.4 0v4.6"/></symbol>
+<symbol id="ico-graphique-barres" viewBox="0 0 24 24"><title>Graphique barres</title><path d="M3.4 20.6h17.2"/><rect x="5.4" y="12.4" width="3.6" height="6"/><rect x="10.2" y="7.6" width="3.6" height="10.8"/><rect x="15" y="10" width="3.6" height="8.4"/></symbol>
+<symbol id="ico-graphique-courbe" viewBox="0 0 24 24"><title>Graphique courbe</title><path d="M3.4 20.6h17.2"/><path d="m5 16.4 4.2-4.6 3.6 3 6.2-7.4"/><path d="M14.6 7.4h4.4v4.4"/></symbol>
+<symbol id="ico-groupe" viewBox="0 0 24 24"><title>Groupe de trois</title><circle cx="12" cy="7" r="3.2"/><path d="M7.6 19.8a4.4 4.4 0 0 1 8.8 0Z"/><circle cx="4.6" cy="10" r="2.6"/><path d="M1.4 19.8v-2a3.2 3.2 0 0 1 4.6-2.9"/><circle cx="19.4" cy="10" r="2.6"/><path d="M22.6 19.8v-2a3.2 3.2 0 0 0-4.6-2.9"/></symbol>
+<symbol id="ico-lit-simple" viewBox="0 0 24 24"><title>Lit simple</title><path d="M3.4 19.6v-5.4a2.6 2.6 0 0 1 2.6-2.6h12a2.6 2.6 0 0 1 2.6 2.6v5.4"/><path d="M3.4 16.6h17.2"/><path d="M6.6 11.6V9a1.6 1.6 0 0 1 1.6-1.6h7.6A1.6 1.6 0 0 1 17.4 9v2.6"/><path d="M3.4 19.6v1.4M20.6 19.6v1.4"/></symbol>
+<symbol id="ico-oeil" viewBox="0 0 24 24"><title>Voir</title><path d="M2.4 12s3.6-6.4 9.6-6.4S21.6 12 21.6 12s-3.6 6.4-9.6 6.4S2.4 12 2.4 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="ico-pourcentage" viewBox="0 0 24 24"><title>Pourcentage</title><path d="m5.6 18.4 12.8-12.8"/><circle cx="7.6" cy="7.6" r="2.6"/><circle cx="16.4" cy="16.4" r="2.6"/></symbol>
+</svg>
+<!--ICONS:END-->
+
+<div class="top">
+  <div class="ttl">
+    <div class="h1">Taux d'occupation, prix moyen et indice, l'essentiel</div>
+    <div class="sub">Trois onglets, douze points · la fiche à relire avant de calculer et de commenter les indicateurs</div>
+  </div>
+  <div class="top-right">
+    <span class="mini-badge">
+      <svg class="ico" aria-hidden="true"><use href="#ico-epingle"/></svg> L'essentiel
+    </span>
+    <div class="zoom-ctrl" role="group" aria-label="Zoom">
+      <button class="zoom-btn" id="zoomOut" aria-label="Réduire" title="Réduire">−</button>
+      <button class="zoom-val" id="zoomReset" aria-label="Réinitialiser le zoom" title="Réinitialiser">100%</button>
+      <button class="zoom-btn" id="zoomIn" aria-label="Agrandir" title="Agrandir">+</button>
+    </div>
+  </div>
+</div>
+
+<div class="tabs" role="tablist" id="tabs"></div>
+<div id="panels" style="display:flex;flex-direction:column;flex:1;min-height:0"></div>
+
+<script>
+let AC;
+const ga=()=>{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();return AC};
+function tn(f1,f2,d,v,dl,tp){try{const a=ga(),o=a.createOscillator(),g=a.createGain();
+o.connect(g);g.connect(a.destination);o.type=tp||'sine';const t=a.currentTime+(dl||0);
+o.frequency.setValueAtTime(f1,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d*.8);
+g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+o.start(t);o.stop(t+d+.02)}catch(e){}}
+function ns(lp,v,d,dl){try{const a=ga(),buf=a.createBuffer(1,~~(a.sampleRate*d),a.sampleRate),
+dat=buf.getChannelData(0);for(let i=0;i<dat.length;i++)dat[i]=Math.random()*2-1;
+const src=a.createBufferSource();src.buffer=buf;const f=a.createBiquadFilter();
+f.type='bandpass';f.frequency.value=lp;f.Q.value=2;const g=a.createGain();
+const t=a.currentTime+(dl||0);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.04);
+g.gain.linearRampToValueAtTime(0,t+d);src.connect(f);f.connect(g);g.connect(a.destination);
+src.start(t);src.stop(t+d+.05)}catch(e){}}
+document.addEventListener('click',()=>{try{if(AC&&AC.state==='suspended')AC.resume()}catch(e){}},{once:true});
+/* Gamification minimale imposée par le type 13 : un son doux, aucun score. */
+const SNDS={doux:()=>tn(880,1100,.14,.03,0,'sine')};
+
+const ONGLETS=[
+{id:"calculer",label:"Calculer",ico:"ico-calculatrice",
+ keep:"Une période se calcule sur des totaux, avec un seul arrondi, à la fin.",
+ points:[
+  {ico:"ico-pourcentage",ttl:"Le taux d'occupation",
+   txt:"Unités <strong>occupées</strong> divisées par unités <strong>disponibles</strong>, multipliées par cent, selon la règle de la maison pour les chambres payantes et les unités hors service. Le résultat se donne avec <strong>une décimale</strong> : 71 chambres sur 97 donnent 73,2 %. L'arrondi se fait une seule fois, à la fin : des intermédiaires arrondis produisent des écarts qui s'accumulent sur un mois."},
+  {ico:"ico-calendrier",ttl:"Le taux d'une période",
+   txt:"Sur une semaine, un mois ou une saison, on additionne les <strong>unités-nuits</strong> occupées et on les divise par la somme des unités-nuits disponibles des mêmes nuits. La moyenne des taux journaliers n'est juste que si tous les dénominateurs sont égaux : dès que des chambres ferment pour travaux, ou qu'une zone de camping ouvre plus tard, elle s'écarte du vrai taux."},
+  {ico:"ico-euro",ttl:"Le prix moyen",
+   txt:"Le <strong>chiffre d'affaires d'hébergement hors taxes</strong>, ventilé, sans petit-déjeuner, taxe de séjour ni débours, divisé par les <strong>unités payantes</strong>, ni offertes ni usage de la maison. Arrondi au centime, il se situe ensuite dans la grille du jour. Sur un mois, il se calcule sur les totaux : c'est une moyenne pondérée par les unités vendues, jamais la moyenne des prix journaliers."},
+  {ico:"ico-groupe",ttl:"L'indice et le prix par personne",
+   txt:"L'<strong>indice de fréquentation</strong> divise les personnes hébergées par les unités occupées et se donne avec deux décimales, sans unité : 194 personnes dans 106 chambres font 1,83. Il ne descend jamais sous 1,00. Le <strong>prix par personne</strong> divise le chiffre d'affaires hors taxes par les personnes des unités payantes, ou le prix moyen chambre par l'indice."}]},
+
+{id:"lire",label:"Lire",ico:"ico-oeil",
+ keep:"Chaque indicateur répond à sa question ; aucun ne se commente sans les deux autres.",
+ points:[
+  {ico:"ico-lit-simple",ttl:"Choisir la bonne unité",
+   txt:"Le <strong>taux en chambres</strong> sert la maison qui vend la chambre ; le <strong>taux en lits</strong>, celle qui vend la place, comme un village de vacances en pension complète. En plein air, emplacements et locatifs se calculent à part, sur les seules nuits d'ouverture. Le taux en lits égale le taux en logements multiplié par l'indice, divisé par le nombre moyen de lits par logement."},
+  {ico:"ico-balance",ttl:"Ce que la moyenne cache",
+   txt:"Un prix moyen bouge sans qu'aucun tarif change. La <strong>composition du parc vendu</strong> : suites restées vides, standard parties. Le <strong>mélange des clientèles</strong> : un seul groupe négocié déplace la moyenne de plusieurs euros. La <strong>durée des séjours</strong>, quand les tarifs dégressifs se multiplient. Le <strong>canal</strong> : deux nuitées au même prix ne rapportent pas autant une fois la commission payée."},
+  {ico:"ico-femme-homme",ttl:"Lire l'ordre de grandeur de l'indice",
+   txt:"Proche de <strong>1,1</strong>, une clientèle surtout individuelle, souvent d'affaires : peu de petits-déjeuners, des lits que la maison ne vend pas. Vers <strong>1,8 à 2,0</strong>, des couples en loisirs. Au-delà de <strong>2,3</strong>, des familles ou des groupes : lits d'appoint, linge, petits-déjeuners nombreux. Un indice qui varie fortement d'un jour à l'autre signale un changement de clientèle, ou une saisie irrégulière."},
+  {ico:"ico-carte-lieu",ttl:"Le plein air et le village",
+   txt:"Sur un terrain, le forfait inclut en général deux personnes et chaque personne supplémentaire paie : l'indice explique une part du chiffre d'affaires. Il se compare aux bracelets remis à l'arrivée ; un écart persistant signale des personnes non déclarées. Dans un village de vacances, un taux en logements de plus de 90 % peut laisser plus d'un lit sur cinq vide."}]},
+
+{id:"comparer",label:"Comparer",ico:"ico-graphique-courbe",
+ keep:"Un chiffre, une comparaison avec son unité, une cause établie.",
+ points:[
+  {ico:"ico-cible",ttl:"Choisir sa référence",
+   txt:"La <strong>semaine précédente</strong> pilote la semaine en cours : un mardi se compare à un mardi. La <strong>même période de l'an passé</strong> neutralise la saisonnalité, à jour de semaine équivalent : la semaine numérotée de la norme ISO 8601 aligne deux années. Le <strong>cumul</strong> du 12 se compare au cumul du 12 de l'an passé. L'<strong>objectif</strong> mesure l'écart à ce que la direction attendait."},
+  {ico:"ico-pourcentage",ttl:"Points, pour cent, valeur",
+   txt:"L'écart entre deux taux s'écrit en <strong>points</strong> : de 61,0 % à 66,5 %, +5,5 points, soit une hausse de 9,0 %. L'écart d'un prix moyen se donne en <strong>euros et en pour cent</strong>. Celui d'un indice se donne en <strong>valeur</strong> : de 1,76 à 1,83, +0,07. Chaque écart s'accompagne de sa référence : « +5,5 points » seul ne dit pas à quoi l'on compare."},
+  {ico:"ico-calendrier",ttl:"Les effets de calendrier",
+   txt:"Avant de commenter un écart, quatre effets se vérifient. Le <strong>jour de la semaine</strong> : un samedi de plus pèse sur un mois. Les <strong>fêtes mobiles</strong> : Pâques, l'Ascension, la Pentecôte déplacent l'activité d'un mois sur l'autre. Les <strong>ponts et vacances scolaires</strong> : un 8 mai un jeudi ouvre quatre jours. Les <strong>événements</strong>, qui se nomment dans le commentaire, chiffres à l'appui."},
+  {ico:"ico-graphique-barres",ttl:"Décomposer, puis commenter",
+   txt:"L'<strong>effet volume</strong> multiplie l'écart d'unités vendues par le prix moyen de référence ; l'<strong>effet prix</strong>, l'écart de prix moyen par les unités de la période étudiée. Leur somme redonne exactement l'écart de chiffre d'affaires. Le commentaire tient en une ou deux phrases : la valeur, l'écart avec son unité, la cause si elle est établie, la conséquence pour les jours suivants."}]}
+];
+
+const $=id=>document.getElementById(id);
+let actif=0;
+
+function peint(){
+  $('tabs').innerHTML=ONGLETS.map((o,i)=>
+    `<button class="tab${i===actif?' is-on':''}" role="tab" data-i="${i}"
+       aria-selected="${i===actif}" aria-controls="p${o.id}">
+      <svg class="ico" aria-hidden="true"><use href="#${o.ico}"/></svg>${o.label}
+    </button>`).join('');
+  $('panels').innerHTML=ONGLETS.map((o,i)=>
+    `<section class="panel${i===actif?' is-on':''}" id="p${o.id}" role="tabpanel">
+      <div class="grid">${o.points.map(p=>
+        `<div class="point">
+          <div class="pt-hd">
+            <span class="pt-ico"><svg class="ico" aria-hidden="true"><use href="#${p.ico}"/></svg></span>
+            <span class="pt-ttl">${p.ttl}</span>
+          </div>
+          <div class="pt-txt">${p.txt}</div>
+        </div>`).join('')}</div>
+      <div class="keep">
+        <svg class="ico" aria-hidden="true"><use href="#ico-epingle"/></svg>
+        <div><div class="keep-lbl">À retenir</div><div class="keep-txt">${o.keep}</div></div>
+      </div>
+    </section>`).join('');
+  document.querySelectorAll('.tab').forEach(b=>{
+    b.addEventListener('click',()=>{actif=+b.dataset.i;SNDS.doux();peint()});
+    b.addEventListener('keydown',e=>{
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+        e.preventDefault();
+        actif=(actif+(e.key==='ArrowRight'?1:ONGLETS.length-1))%ONGLETS.length;
+        SNDS.doux();peint();
+        document.querySelectorAll('.tab')[actif].focus();
+      }});
+  });
+}
+
+(function(){
+  const STEPS=[0.8,0.9,1,1.1,1.25,1.4,1.6];let i=STEPS.indexOf(1);
+  const root=document.documentElement,val=$('zoomReset');
+  function apply(){const z=STEPS[i];root.style.setProperty('--z',z);
+    root.classList.toggle('zoomed',z>1);if(val)val.textContent=Math.round(z*100)+'%'}
+  $('zoomIn').addEventListener('click',()=>{i=Math.min(i+1,STEPS.length-1);apply()});
+  $('zoomOut').addEventListener('click',()=>{i=Math.max(i-1,0);apply()});
+  val.addEventListener('click',()=>{i=STEPS.indexOf(1);apply()});apply()})();
+
+peint();SNDS.doux();
+</script>
+</body>
+</html>

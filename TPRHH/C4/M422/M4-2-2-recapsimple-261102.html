@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La TVA en plein air · L'essentiel</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:20px;--s6:24px;--s7:32px;--s8:40px;
+  --r1:8px;--r2:12px;--r3:16px;--r4:20px;--rf:999px;
+  --e1:0 1px 3px rgba(0,0,0,.06);--e2:0 4px 16px rgba(0,0,0,.08);--e3:0 12px 32px -8px rgba(0,0,0,.22);
+  --ink:#323232;--ink-body:#323232;--ink-soft:#6B6560;--line:rgba(0,0,0,.10);
+  --surface:#FAFAFA;
+  --paper:#F2F3F5;--ac:#64748B;--on-ac:#FAFAFA;--ac-bg:#E1E5EA;--ac-bd:#7A899F;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:auto;min-height:100dvh;font-family:'Montserrat',sans-serif;
+  overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
+/* Racine reduite de 20 % (design-tokens.md §1) : le reglage precedent
+   (17-22px) poussait le contenu hors de l'ecran sur les formats moyens.
+   Corps de texte effectif : 13 a 17,5px. Aucun token individuel retouche. */
+html{font-size:calc(clamp(13.5px, 0.84vw + 8px, 17.5px) * var(--z, 1))}
+body{background:var(--paper);padding:var(--s5);
+  padding-bottom:calc(var(--s8) + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;gap:var(--s4);color:var(--ink-body)}
+@media (min-width:881px){
+  html,body{height:100%;min-height:0;overflow:hidden}
+  body{padding:var(--s7);padding-bottom:var(--s7)}
+}
+html.zoomed,html.zoomed body{height:auto;min-height:100%;overflow:auto}
+.ico{width:1.25em;height:1.25em;flex-shrink:0;fill:none;stroke:currentColor;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s4);
+  flex-wrap:wrap}
+.h1{font-size:1.5rem;font-weight:800;color:var(--ink);margin-bottom:var(--s1);
+  letter-spacing:-.01em;line-height:1.2}
+.sub{font-size:0.85rem;font-weight:500;color:var(--ink-soft)}
+.top-right{display:flex;align-items:center;gap:var(--s3);flex-wrap:wrap}
+.mini-badge{display:inline-flex;align-items:center;gap:var(--s2);
+  background:var(--ac);color:var(--on-ac);border-radius:var(--rf);
+  padding:var(--s2) var(--s4);font-size:0.68rem;font-weight:800;
+  letter-spacing:.14em;text-transform:uppercase}
+.zoom-ctrl{display:flex;align-items:center;gap:2px;background:var(--surface);
+  border:1.5px solid var(--line);border-radius:var(--r2);padding:3px;flex-shrink:0}
+.zoom-btn,.zoom-val{font-family:inherit;border:none;background:transparent;cursor:pointer;
+  color:var(--ink-soft);font-weight:800;transition:background .15s;border-radius:var(--r1)}
+.zoom-btn{width:1.6rem;height:1.6rem;font-size:0.95rem;line-height:1;
+  display:flex;align-items:center;justify-content:center}
+.zoom-btn:hover,.zoom-val:hover{background:var(--ac-bg);color:var(--ink)}
+.zoom-val{min-width:2.6rem;height:1.6rem;font-size:0.68rem;letter-spacing:.02em}
+
+.tabs{display:flex;gap:var(--s2);flex-wrap:wrap}
+.tab{font-family:inherit;font-size:0.95rem;font-weight:700;padding:var(--s3) var(--s6);
+  min-height:48px;border:1.5px solid var(--line);background:var(--surface);cursor:pointer;
+  color:var(--ink);border-radius:var(--r2);transition:background .15s,border-color .15s;
+  display:inline-flex;align-items:center;gap:var(--s2)}
+.tab:hover{background:var(--ac-bg)}
+.tab.is-on{background:var(--ac);color:var(--on-ac);border-color:var(--ac)}
+.tab:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+.panel{display:none;flex:1;flex-direction:column;gap:var(--s4);min-height:0}
+.panel.is-on{display:flex;animation:fadeUp .3s both}
+.grid{flex:1;display:grid;gap:var(--s4);grid-template-columns:repeat(2,1fr);
+  align-content:stretch;min-height:0}
+@media (max-width:880px){.grid{grid-template-columns:1fr}}
+.point{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r4);
+  padding:var(--s5);display:flex;flex-direction:column;gap:var(--s2);box-shadow:var(--e1);
+  animation:popIn .4s both;min-height:0}
+.point:nth-child(2){animation-delay:.06s}
+.point:nth-child(3){animation-delay:.12s}
+.point:nth-child(4){animation-delay:.18s}
+.pt-hd{display:flex;align-items:center;gap:var(--s3)}
+.pt-ico{width:2.1rem;height:2.1rem;border-radius:var(--r1);background:var(--ac-bg);
+  color:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pt-ico .ico{width:1.2rem;height:1.2rem;stroke-width:1.7}
+.pt-ttl{font-size:1.25rem;font-weight:800;color:var(--ink);line-height:1.2;letter-spacing:-.01em}
+.pt-txt{font-size:0.95rem;font-weight:500;color:var(--ink-body);line-height:1.6;
+  overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--ac-bd) transparent}
+.pt-txt::-webkit-scrollbar{width:4px}
+.pt-txt::-webkit-scrollbar-thumb{background:var(--ac-bd);border-radius:2px}
+.pt-txt strong{font-weight:700;color:var(--ink)}
+
+.keep{background:var(--ac);color:var(--on-ac);border-radius:var(--r3);
+  padding:var(--s4) var(--s6);display:flex;align-items:center;gap:var(--s4);flex-shrink:0}
+.keep .ico{width:1.6rem;height:1.6rem;stroke-width:1.7}
+.keep-lbl{font-size:0.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  opacity:.75;margin-bottom:2px}
+.keep-txt{font-size:0.95rem;font-weight:700;line-height:1.45}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<!--ICONS:START-->
+<svg style="display:none" aria-hidden="true">
+<symbol id="ico-alerte" viewBox="0 0 24 24"><title>Alerte</title><path d="M12 3.4 21.6 20H2.4Z"/><path d="M12 9.6v4.6"/><path d="M12 17.2v.1"/></symbol>
+<symbol id="ico-assiette" viewBox="0 0 24 24"><title>Assiette</title><circle cx="12" cy="12" r="8.8"/><circle cx="12" cy="12" r="5.2"/></symbol>
+<symbol id="ico-cadenas" viewBox="0 0 24 24"><title>Verrouillé</title><rect x="4.6" y="10.4" width="14.8" height="10.2" rx="2.2"/><path d="M8.2 10.4V7.6a3.8 3.8 0 0 1 7.6 0v2.8"/></symbol>
+<symbol id="ico-caisse" viewBox="0 0 24 24"><title>Caisse</title><rect x="2.8" y="9" width="18.4" height="11.4" rx="2"/><path d="M6.6 9V5a1.6 1.6 0 0 1 1.6-1.6h7.6A1.6 1.6 0 0 1 17.4 5v4"/><path d="M6.6 13h4M6.6 16.4h4"/><path d="M14.4 13h3M14.4 16.4h3"/></symbol>
+<symbol id="ico-calendrier" viewBox="0 0 24 24"><title>Calendrier</title><rect x="3.2" y="5" width="17.6" height="16" rx="2.2"/><path d="M3.2 9.8h17.6"/><path d="M8 3v4M16 3v4"/><path d="M7.6 13.6h2M11 13.6h2M14.4 13.6h2M7.6 17h2M11 17h2"/></symbol>
+<symbol id="ico-carte-lieu" viewBox="0 0 24 24"><title>Carte</title><path d="m2.8 6 6-2.4v14.8l-6 2.4Z"/><path d="m8.8 3.6 6.4 2.6v14.8L8.8 18.4Z"/><path d="m15.2 6.2 6-2.6v14.8l-6 2.6Z"/></symbol>
+<symbol id="ico-contrat" viewBox="0 0 24 24"><title>Contrat</title><path d="M13.4 2.8H7a2 2 0 0 0-2 2v14.4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.4Z"/><path d="M13.4 2.8v5.6H19"/><path d="M8.4 12.6h7.2M8.4 16h4.4"/></symbol>
+<symbol id="ico-eclair" viewBox="0 0 24 24"><title>Éclair</title><path d="M13.6 2.4 4.8 13.6h6.2l-1.2 8 9-11.2h-6.2Z"/></symbol>
+<symbol id="ico-epingle" viewBox="0 0 24 24"><title>Épingler</title><path d="M9 3.6h6l-.8 6 3.4 3.2H6.4L9.8 9.6Z"/><path d="M12 12.8v7.6"/></symbol>
+<symbol id="ico-etoile" viewBox="0 0 24 24"><title>Étoile</title><path d="m12 3 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.8l6.5-.9Z"/></symbol>
+<symbol id="ico-facture" viewBox="0 0 24 24"><title>Facture</title><path d="M4.6 2.8h14.8v18.4l-2.4-1.6-2.4 1.6-2.6-1.6-2.6 1.6-2.4-1.6-2.4 1.6Z"/><path d="M8 8h8M8 12h8M8 15.6h4.4"/></symbol>
+<symbol id="ico-filtrer" viewBox="0 0 24 24"><title>Filtrer</title><path d="M3.4 4.6h17.2l-6.6 7.8v6.4l-4 2.2v-8.6Z"/></symbol>
+<symbol id="ico-minuteur" viewBox="0 0 24 24"><title>Minuteur</title><circle cx="12" cy="13.2" r="7.8"/><path d="M12 9v4.2l2.8 1.8"/><path d="M9.4 2.6h5.2"/></symbol>
+<symbol id="ico-oeil" viewBox="0 0 24 24"><title>Voir</title><path d="M2.4 12s3.6-6.4 9.6-6.4S21.6 12 21.6 12s-3.6 6.4-9.6 6.4S2.4 12 2.4 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="ico-plus" viewBox="0 0 24 24"><title>Plus</title><path d="M12 4.5v15"/><path d="M4.5 12h15"/></symbol>
+</svg>
+<!--ICONS:END-->
+
+<div class="top">
+  <div class="ttl">
+    <div class="h1">La TVA en hôtellerie de plein air, l'essentiel</div>
+    <div class="sub">Trois onglets, douze points · la fiche à relire avant de contrôler une note de camping</div>
+  </div>
+  <div class="top-right">
+    <span class="mini-badge">
+      <svg class="ico" aria-hidden="true"><use href="#ico-epingle"/></svg> L'essentiel
+    </span>
+    <div class="zoom-ctrl" role="group" aria-label="Zoom">
+      <button class="zoom-btn" id="zoomOut" aria-label="Réduire" title="Réduire">−</button>
+      <button class="zoom-val" id="zoomReset" aria-label="Réinitialiser le zoom" title="Réinitialiser">100%</button>
+      <button class="zoom-btn" id="zoomIn" aria-label="Agrandir" title="Agrandir">+</button>
+    </div>
+  </div>
+</div>
+
+<div class="tabs" role="tablist" id="tabs"></div>
+<div id="panels" style="display:flex;flex-direction:column;flex:1;min-height:0"></div>
+
+<script>
+let AC;
+const ga=()=>{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();return AC};
+function tn(f1,f2,d,v,dl,tp){try{const a=ga(),o=a.createOscillator(),g=a.createGain();
+o.connect(g);g.connect(a.destination);o.type=tp||'sine';const t=a.currentTime+(dl||0);
+o.frequency.setValueAtTime(f1,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d*.8);
+g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+o.start(t);o.stop(t+d+.02)}catch(e){}}
+function ns(lp,v,d,dl){try{const a=ga(),buf=a.createBuffer(1,~~(a.sampleRate*d),a.sampleRate),
+dat=buf.getChannelData(0);for(let i=0;i<dat.length;i++)dat[i]=Math.random()*2-1;
+const src=a.createBufferSource();src.buffer=buf;const f=a.createBiquadFilter();
+f.type='bandpass';f.frequency.value=lp;f.Q.value=2;const g=a.createGain();
+const t=a.currentTime+(dl||0);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.04);
+g.gain.linearRampToValueAtTime(0,t+d);src.connect(f);f.connect(g);g.connect(a.destination);
+src.start(t);src.stop(t+d+.05)}catch(e){}}
+document.addEventListener('click',()=>{try{if(AC&&AC.state==='suspended')AC.resume()}catch(e){}},{once:true});
+/* Gamification minimale imposée par le type 13 : un son doux, aucun score. */
+const SNDS={doux:()=>tn(880,1100,.14,.03,0,'sine')};
+
+const ONGLETS=[
+{id:"statut",label:"Le statut",ico:"ico-etoile", keep:"Le taux de l'hébergement suit le classement du terrain, et le classement a une date de fin.",
+ points:[
+  {ico:"ico-etoile",ttl:"Classé ou non : la première question",
+   txt:"Sur un terrain de camping <strong>classé</strong>, la location d'emplacement et la fourniture de logement relèvent de 10 %, d'une à cinq étoiles. Sur un terrain <strong>non classé</strong>, les mêmes prestations relèvent de 20 %. À l'hôtel, la nuit est à 10 % sans condition : le plein air ajoute une vérification que l'hôtel ne connaît pas."},
+  {ico:"ico-contrat",ttl:"Qui classe, et sur quelle base",
+   txt:"Un <strong>organisme évaluateur accrédité</strong> visite le terrain et contrôle les critères d'un tableau fixé par arrêté. <strong>Atout France</strong> prononce la décision au vu du rapport. Le classement est volontaire : un terrain peut exploiter sans être classé, quelle que soit la qualité de ses équipements."},
+  {ico:"ico-calendrier",ttl:"Cinq ans, puis la bascule",
+   txt:"Depuis la loi du 22 juillet 2009, le classement vaut <strong>cinq ans</strong>. Non renouvelé, il expire et le terrain devient non classé dès le lendemain. Le logiciel continue d'appliquer 10 % : chaque nuitée est sous-taxée de dix points, et la différence se paie sur les recettes de la maison."},
+  {ico:"ico-oeil",ttl:"Ce qui se lit sur la décision",
+   txt:"La <strong>date de décision</strong>, point de départ des cinq ans ; la <strong>date d'échéance</strong>, au-delà de laquelle tout bascule ; la <strong>catégorie</strong>, qui fixe la taxe de séjour sans changer la TVA ; la <strong>demande de renouvellement</strong>. Le panonceau de l'entrée, lui, ne prouve rien."}]},
+
+{id:"recettes",label:"Les recettes",ico:"ico-caisse", keep:"Chaque recette prend le taux de sa nature ; l'accessoire suit le principal.",
+ points:[
+  {ico:"ico-carte-lieu",ttl:"Emplacements et locatifs",
+   txt:"L'<strong>emplacement</strong> est une parcelle louée sans logement ; le <strong>locatif</strong> — mobil-home, chalet, tente équipée — est un logement fourni. Les deux suivent le même taux, celui du statut du terrain. Un emplacement grand confort reste un emplacement : son sanitaire privatif n'en fait pas un logement."},
+  {ico:"ico-plus",ttl:"Les accessoires suivent le principal",
+   txt:"Personne supplémentaire, véhicule, animal, petite tente, frais de réservation : ces lignes n'existent que pour le séjour et en prennent le taux. Le test : un passant pourrait-il l'acheter seule ? Si oui, la prestation garde son propre taux, comme une location de vélo."},
+  {ico:"ico-assiette",ttl:"Snack, bar et épicerie",
+   txt:"Le <strong>snack</strong> applique les taux d'un restaurant : 10 % pour ce qui est préparé pour être mangé tout de suite, 20 % pour l'alcool. L'<strong>épicerie</strong> suit l'article : 5,5 % pour le pain et les denrées emportées, 20 % pour l'alcool, la crème solaire ou le gaz. Aucun des deux ne dépend du classement."},
+  {ico:"ico-minuteur",ttl:"Loisirs et services à 20 %",
+   txt:"Locations de vélos et d'engins de loisirs, équipements loués à l'emplacement, laverie, activités payantes : ce sont des services autonomes au <strong>taux normal</strong>, classé ou non. Leur rattachement au compte du séjour ne change rien au taux."}]},
+
+{id:"controle",label:"Le contrôle",ico:"ico-filtrer", keep:"Une note de camping se contrôle ligne par ligne, taux et unité compris.",
+ points:[
+  {ico:"ico-eclair",ttl:"L'électricité, avec son unité",
+   txt:"Le <strong>branchement forfaitaire</strong>, à la nuit, suit l'emplacement. L'électricité <strong>relevée au compteur</strong> et facturée au kilowattheure est une vente d'énergie, à 20 %, sur une ligne distincte. Une ligne « électricité » sans unité est une ligne à vérifier."},
+  {ico:"ico-cadenas",ttl:"Garage mort et borne de services",
+   txt:"Le <strong>garage mort</strong> garde une caravane sans ses occupants : stationnement à 20 %, même sur une parcelle numérotée. Le camping-car qui utilise la <strong>borne</strong> sans passer la nuit achète un service à 20 %. Saisis comme des nuitées, ils faussent à la fois le taux et l'occupation."},
+  {ico:"ico-facture",ttl:"Ce qui reste hors de toute base",
+   txt:"La <strong>taxe de séjour</strong>, perçue pour la collectivité ; la <strong>prime d'assurance annulation</strong>, collectée pour l'assureur ; le <strong>dépôt de garantie</strong>, remboursable au départ. Aucune ne porte de TVA, aucune n'entre dans le chiffre d'affaires du terrain."},
+  {ico:"ico-alerte",ttl:"Corriger, puis signaler le code",
+   txt:"Une erreur de taux en camping est presque toujours une erreur de <strong>paramétrage</strong> : elle se reproduit sur toutes les notes. Le poste corrige ses notes avant édition, ou par avoir et nouvelle facture, puis signale le code fautif le jour même à la hiérarchie, avec deux ou trois exemples."}]}
+];
+
+const $=id=>document.getElementById(id);
+let actif=0;
+
+function peint(){
+  $('tabs').innerHTML=ONGLETS.map((o,i)=>
+    `<button class="tab${i===actif?' is-on':''}" role="tab" data-i="${i}"
+       aria-selected="${i===actif}" aria-controls="p${o.id}">
+      <svg class="ico" aria-hidden="true"><use href="#${o.ico}"/></svg>${o.label}
+    </button>`).join('');
+  $('panels').innerHTML=ONGLETS.map((o,i)=>
+    `<section class="panel${i===actif?' is-on':''}" id="p${o.id}" role="tabpanel">
+      <div class="grid">${o.points.map(p=>
+        `<div class="point">
+          <div class="pt-hd">
+            <span class="pt-ico"><svg class="ico" aria-hidden="true"><use href="#${p.ico}"/></svg></span>
+            <span class="pt-ttl">${p.ttl}</span>
+          </div>
+          <div class="pt-txt">${p.txt}</div>
+        </div>`).join('')}</div>
+      <div class="keep">
+        <svg class="ico" aria-hidden="true"><use href="#ico-epingle"/></svg>
+        <div><div class="keep-lbl">À retenir</div><div class="keep-txt">${o.keep}</div></div>
+      </div>
+    </section>`).join('');
+  document.querySelectorAll('.tab').forEach(b=>{
+    b.addEventListener('click',()=>{actif=+b.dataset.i;SNDS.doux();peint()});
+    b.addEventListener('keydown',e=>{
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+        e.preventDefault();
+        actif=(actif+(e.key==='ArrowRight'?1:ONGLETS.length-1))%ONGLETS.length;
+        SNDS.doux();peint();
+        document.querySelectorAll('.tab')[actif].focus();
+      }});
+  });
+}
+
+(function(){
+  const STEPS=[0.8,0.9,1,1.1,1.25,1.4,1.6];let i=STEPS.indexOf(1);
+  const root=document.documentElement,val=$('zoomReset');
+  function apply(){const z=STEPS[i];root.style.setProperty('--z',z);
+    root.classList.toggle('zoomed',z>1);if(val)val.textContent=Math.round(z*100)+'%'}
+  $('zoomIn').addEventListener('click',()=>{i=Math.min(i+1,STEPS.length-1);apply()});
+  $('zoomOut').addEventListener('click',()=>{i=Math.max(i-1,0);apply()});
+  val.addEventListener('click',()=>{i=STEPS.indexOf(1);apply()});apply()})();
+
+peint();SNDS.doux();
+</script>
+</body>
+</html>

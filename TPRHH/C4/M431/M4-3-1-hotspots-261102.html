@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La feuille de situation · Schéma interactif</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:20px;--s6:24px;--s7:32px;--s8:40px;
+  --r1:8px;--r2:12px;--r3:16px;--r4:20px;--rf:999px;
+  --e1:0 1px 3px rgba(0,0,0,.06);--e2:0 4px 16px rgba(0,0,0,.08);--e3:0 12px 32px -8px rgba(0,0,0,.22);
+  --ink:#323232;--ink-body:#323232;--ink-soft:#6B6560;--line:rgba(0,0,0,.10);
+  --surface:#FAFAFA;
+  /* MATIÈRE — Jaune : tourisme, hébergement, réception, accueil (palettes-domaines.md §1) */
+  --paper:#F2F3F5;--ac:#64748B;--on-ac:#FAFAFA;--ac-bg:#E1E5EA;--ac-bd:#7A899F;
+  /* couleurs de la carte — le réel, saturation réduite (svg-illustration.md) */
+  --z-centre:#E8DCC0;--z-peri:#DCD3C6;--z-campagne:#CBD9C3;
+  --z-eau:#C3D4DE;--z-voie:#C9CDD2;--trait:#7A736A;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:auto;min-height:100dvh;font-family:'Montserrat',sans-serif;
+  overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
+/* Racine reduite de 20 % (design-tokens.md §1) : le reglage precedent
+   (17-22px) poussait le contenu hors de l'ecran sur les formats moyens.
+   Corps de texte effectif : 13 a 17,5px. Aucun token individuel retouche. */
+html{font-size:calc(clamp(13.5px, 0.84vw + 8px, 17.5px) * var(--z, 1))}
+body{background:var(--paper);padding:var(--s5);
+  padding-bottom:calc(var(--s8) + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;color:var(--ink-body)}
+@media (min-width:881px){
+  html,body{height:100%;min-height:0;overflow:hidden}
+  body{padding:var(--s7);padding-bottom:var(--s7)}
+}
+html.zoomed,html.zoomed body{height:auto;min-height:100%;overflow:auto}
+
+.ico{width:1.25em;height:1.25em;flex-shrink:0;fill:none;stroke:currentColor;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s4);
+  margin-bottom:var(--s5);flex-wrap:wrap}
+.h1{font-size:1.5rem;font-weight:800;color:var(--ink);margin-bottom:var(--s1);
+  letter-spacing:-.01em;line-height:1.2}
+.sub{font-size:0.85rem;font-weight:500;color:var(--ink-soft)}
+.top-right{display:flex;align-items:center;gap:var(--s3);flex-wrap:wrap}
+.zoom-ctrl{display:flex;align-items:center;gap:2px;background:var(--surface);
+  border:1.5px solid var(--line);border-radius:var(--r2);padding:3px;flex-shrink:0}
+.zoom-btn,.zoom-val{font-family:inherit;border:none;background:transparent;cursor:pointer;
+  color:var(--ink-soft);font-weight:800;transition:background .15s;border-radius:var(--r1)}
+.zoom-btn{width:1.6rem;height:1.6rem;font-size:0.95rem;line-height:1;
+  display:flex;align-items:center;justify-content:center}
+.zoom-btn:hover,.zoom-val:hover{background:var(--ac-bg);color:var(--ink)}
+.zoom-val{min-width:2.6rem;height:1.6rem;font-size:0.68rem;letter-spacing:.02em}
+
+.legend{display:flex;gap:var(--s3);flex-wrap:wrap;align-items:center;margin-bottom:var(--s4)}
+.leg{display:inline-flex;align-items:center;gap:var(--s2);font-size:0.68rem;
+  font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.leg-sw{width:0.85rem;height:0.85rem;border-radius:3px;border:1.5px solid var(--trait)}
+
+.stage{flex:1;display:flex;gap:var(--s5);min-height:0}
+@media (max-width:880px){.stage{flex-direction:column}}
+
+.plan-wrap{flex:1.35;background:var(--surface);border:1.5px solid var(--line);
+  border-radius:var(--r4);padding:var(--s4);min-height:0;display:flex}
+.plan{width:100%;height:100%;display:block;min-height:15rem}
+
+.anneau{stroke:var(--trait);stroke-width:1.6;stroke-dasharray:7 5}
+.champ{fill:#FAFAFA;stroke:var(--trait);stroke-width:1.4}
+.voie{stroke:var(--z-voie);stroke-width:9;fill:none;stroke-linecap:round}
+.voie-bord{stroke:var(--trait);stroke-width:1.2;fill:none;stroke-dasharray:3 6}
+.bati{fill:var(--z-centre);stroke:var(--trait);stroke-width:1.6}
+.lbl{font-family:'Montserrat',sans-serif;font-weight:700;font-size:15px;
+  fill:#323232;text-anchor:middle;pointer-events:none}
+.lbl.soft{font-weight:600;fill:#6B6560}
+.mini{font-family:'Montserrat',sans-serif;font-weight:600;font-size:14px;
+  fill:#323232;pointer-events:none}
+.mini.b{font-weight:800}
+.mini.r{text-anchor:end}
+.mini.mid{text-anchor:middle;fill:#6B6560}
+
+.hs{cursor:pointer}
+.hs-halo{fill:var(--ac);opacity:.2;transition:opacity .18s}
+.hs-dot{fill:var(--ac);stroke:#FAFAFA;stroke-width:3;transition:r .18s}
+.hs-num{fill:#323232;font-family:'Montserrat',sans-serif;font-weight:800;font-size:19px;
+  text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.hs:hover .hs-dot,.hs:focus-visible .hs-dot{r:23}
+.hs:hover .hs-halo{opacity:.34}
+.hs:focus-visible{outline:none}
+.hs:focus-visible .hs-halo{opacity:.45}
+.hs.active .hs-halo{opacity:.42}
+.hs.visited .hs-dot{stroke:var(--trait)}
+.hs.pulse .hs-halo{animation:hspulse 2.2s ease infinite}
+
+.panel{flex:1;background:var(--surface);border:1.5px solid var(--line);
+  border-radius:var(--r4);padding:var(--s6);display:flex;flex-direction:column;
+  gap:var(--s4);min-height:0;min-width:0}
+.welcome{flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:var(--s3);text-align:center;
+  border:2px dashed var(--ac-bd);border-radius:var(--r3);padding:var(--s6)}
+.welcome-ico{color:var(--ink-soft)}
+.welcome-ico .ico{width:2.8rem;height:2.8rem;stroke-width:1.5}
+.welcome-h{font-size:1.25rem;font-weight:800;color:var(--ink);line-height:1.2}
+.welcome-t{font-size:0.9rem;font-weight:500;color:var(--ink-soft);line-height:1.6;max-width:24rem}
+.welcome-cta{font-size:0.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--on-ac);background:var(--ac);padding:var(--s1) var(--s3);border-radius:var(--r1)}
+
+.p-tag{display:inline-flex;align-items:center;gap:var(--s1);align-self:flex-start;
+  padding:3px var(--s3);border-radius:var(--rf);background:var(--ac);color:var(--on-ac);
+  font-size:0.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.p-h{font-size:1.25rem;font-weight:800;color:var(--ink);line-height:1.25;letter-spacing:-.01em}
+.p-body{font-size:0.95rem;font-weight:500;color:var(--ink-body);line-height:1.6}
+.p-body strong{font-weight:700;color:var(--ink)}
+.p-rows{display:flex;flex-direction:column;gap:var(--s2)}
+.p-row{display:flex;gap:var(--s3);align-items:baseline;padding-bottom:var(--s2);
+  border-bottom:1.5px solid var(--line)}
+.p-row:last-child{border-bottom:none;padding-bottom:0}
+.p-row-l{font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-soft);min-width:6.5rem;flex-shrink:0}
+.p-row-v{font-size:0.85rem;font-weight:600;color:var(--ink);line-height:1.5}
+.vigilance{padding:var(--s4) var(--s5);border-radius:var(--r3);font-size:0.9rem;
+  font-weight:500;line-height:1.6;border-left:3px solid var(--ac);background:var(--ac-bg);
+  color:var(--ink)}
+.scroll-zone{overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--ac-bd) transparent}
+.scroll-zone::-webkit-scrollbar{width:4px}
+.scroll-zone::-webkit-scrollbar-track{background:transparent}
+.scroll-zone::-webkit-scrollbar-thumb{background:var(--ac-bd);border-radius:2px}
+
+.nav-bar{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);
+  margin-top:var(--s4);flex-wrap:wrap}
+.nbtn{font-family:inherit;font-size:0.8rem;font-weight:700;padding:var(--s3) var(--s5);
+  min-height:48px;border-radius:var(--r2);border:1.5px solid var(--line);
+  background:var(--surface);color:var(--ink);cursor:pointer;transition:background .18s;
+  display:inline-flex;align-items:center;gap:var(--s2)}
+.nbtn:hover:not(:disabled){background:var(--ac-bg)}
+.nbtn:disabled{opacity:.35;cursor:default}
+.nbtn.primary{background:var(--ac);color:var(--on-ac);border-color:var(--ac)}
+.nbtn.primary:hover:not(:disabled){background:var(--ac-bd)}
+.nav-prog{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.dot{width:0.5rem;height:0.5rem;border-radius:50%;background:var(--ac-bd);opacity:.4}
+.dot.seen{opacity:1}
+.dot.now{opacity:1;background:var(--ac);outline:2px solid var(--trait);outline-offset:2px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes hspulse{0%,100%{opacity:.2}50%{opacity:.04}}
+.panel > *{animation:fadeUp .3s both}
+</style>
+</head>
+<body>
+<!--ICONS:START-->
+<svg style="display:none" aria-hidden="true">
+<symbol id="ico-fichier" viewBox="0 0 24 24"><title>Fichier</title><path d="M13.4 2.8H7a2 2 0 0 0-2 2v14.4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.4Z"/><path d="M13.4 2.8v5.6H19"/></symbol>
+<symbol id="ico-fleche-droite" viewBox="0 0 24 24"><title>Flèche droite</title><path d="M3.5 12h17"/><path d="M14 5.5 20.5 12 14 18.5"/></symbol>
+<symbol id="ico-fleche-gauche" viewBox="0 0 24 24"><title>Flèche gauche</title><path d="M20.5 12h-17"/><path d="M10 5.5 3.5 12 10 18.5"/></symbol>
+</svg>
+<!--ICONS:END-->
+
+<div class="top">
+  <div class="ttl">
+    <div class="h1">La feuille de situation, zone par zone</div>
+    <div class="sub">Neuf zones d'une feuille éditée · cliquez une zone pour savoir ce qu'elle compte</div>
+  </div>
+  <div class="top-right">
+    <div class="zoom-ctrl" role="group" aria-label="Zoom">
+      <button class="zoom-btn" id="zoomOut" aria-label="Réduire" title="Réduire">−</button>
+      <button class="zoom-val" id="zoomReset" aria-label="Réinitialiser le zoom" title="Réinitialiser">100%</button>
+      <button class="zoom-btn" id="zoomIn" aria-label="Agrandir" title="Agrandir">+</button>
+    </div>
+  </div>
+</div>
+
+<div class="legend" aria-label="Légende de la carte">
+  <span class="leg"><span class="leg-sw" style="background:var(--z-centre)"></span>La feuille éditée</span>
+  <span class="leg"><span class="leg-sw" style="background:#FAFAFA"></span>Les zones à lire</span>
+  
+  
+</div>
+
+<div class="stage">
+  <div class="plan-wrap">
+    <svg class="plan" viewBox="0 0 640 580" preserveAspectRatio="xMidYMid meet"
+         role="img" aria-label="Feuille de situation d'une journée close, neuf zones numérotées">
+
+      <!-- la feuille éditée -->
+      <rect class="bati" x="20" y="14" width="600" height="552" rx="10"/>
+      <rect class="bati" x="20" y="14" width="600" height="52" rx="10"/>
+      <text class="lbl" x="350" y="36">Feuille de situation · journée du mardi 14 octobre</text>
+      <text class="mini mid" x="350" y="56">Édition du mercredi 15 à 6 h 52, après clôture</text>
+      <g class="hs pulse" data-id="1" tabindex="0" role="button" aria-label="L'en-tête">
+        <circle class="hs-halo" cx="60" cy="40" r="26"/><circle class="hs-dot" cx="60" cy="40" r="20"/>
+        <text class="hs-num" x="60" y="40">1</text></g>
+
+      <rect class="champ" x="40" y="76" width="560" height="28" rx="5"/>
+      <text class="mini b" x="92" y="95">Ligne</text>
+      <text class="mini b r" x="440" y="95">Jour</text>
+      <text class="mini b r" x="520" y="95">Cumul</text>
+      <text class="mini b r" x="594" y="95">N-1</text>
+      <g class="hs pulse" data-id="2" tabindex="0" role="button" aria-label="Les colonnes jour, cumul et N-1">
+        <circle class="hs-halo" cx="60" cy="90" r="26"/><circle class="hs-dot" cx="60" cy="90" r="20"/>
+        <text class="hs-num" x="60" y="90">2</text></g>
+
+      <rect class="champ" x="40" y="116" width="560" height="80" rx="5"/>
+      <text class="mini" x="92" y="140">Capacité</text>
+      <text class="mini r" x="440" y="140">66</text>
+      <text class="mini r" x="520" y="140">924</text>
+      <text class="mini r" x="594" y="140">66</text>
+      <text class="mini" x="92" y="162">Disponibles</text>
+      <text class="mini r" x="440" y="162">64</text>
+      <text class="mini r" x="520" y="162">902</text>
+      <text class="mini r" x="594" y="162">66</text>
+      <text class="mini" x="92" y="184">Libres</text>
+      <text class="mini r" x="440" y="184">13</text>
+      <text class="mini r" x="520" y="184">215</text>
+      <text class="mini r" x="594" y="184">17</text>
+      <g class="hs pulse" data-id="3" tabindex="0" role="button" aria-label="L'état du parc">
+        <circle class="hs-halo" cx="60" cy="140" r="26"/><circle class="hs-dot" cx="60" cy="140" r="20"/>
+        <text class="hs-num" x="60" y="140">3</text></g>
+
+      <rect class="champ" x="40" y="208" width="560" height="36" rx="5"/>
+      <text class="mini" x="92" y="231">Hors service · 214 et 215 · retour le 17</text>
+      <text class="mini r" x="440" y="231">2</text>
+      <text class="mini r" x="520" y="231">22</text>
+      <text class="mini r" x="594" y="231">0</text>
+      <g class="hs pulse" data-id="4" tabindex="0" role="button" aria-label="Les unités hors service">
+        <circle class="hs-halo" cx="60" cy="226" r="26"/><circle class="hs-dot" cx="60" cy="226" r="20"/>
+        <text class="hs-num" x="60" y="226">4</text></g>
+
+      <rect class="champ" x="40" y="256" width="560" height="70" rx="5"/>
+      <text class="mini" x="92" y="278">Occupées</text>
+      <text class="mini r" x="440" y="278">51</text>
+      <text class="mini r" x="520" y="278">687</text>
+      <text class="mini r" x="594" y="278">49</text>
+      <text class="mini" x="92" y="298">dont payantes</text>
+      <text class="mini r" x="440" y="298">48</text>
+      <text class="mini r" x="520" y="298">652</text>
+      <text class="mini r" x="594" y="298">47</text>
+      <text class="mini" x="92" y="318">Offertes 2 · usage maison 1 · de jour 2 (à part)</text>
+      <g class="hs pulse" data-id="5" tabindex="0" role="button" aria-label="Les unités occupées et leurs catégories">
+        <circle class="hs-halo" cx="60" cy="276" r="26"/><circle class="hs-dot" cx="60" cy="276" r="20"/>
+        <text class="hs-num" x="60" y="276">5</text></g>
+
+      <rect class="champ" x="40" y="338" width="560" height="36" rx="5"/>
+      <text class="mini" x="92" y="361">Veille 46 + arrivées 19 − départs 14 = 51 · non-présentation 1</text>
+      <g class="hs pulse" data-id="6" tabindex="0" role="button" aria-label="Les mouvements de la journée">
+        <circle class="hs-halo" cx="60" cy="356" r="26"/><circle class="hs-dot" cx="60" cy="356" r="20"/>
+        <text class="hs-num" x="60" y="356">6</text></g>
+
+      <rect class="champ" x="40" y="386" width="560" height="36" rx="5"/>
+      <text class="mini" x="92" y="409">Personnes (77 adultes, 6 enfants)</text>
+      <text class="mini r" x="440" y="409">83</text>
+      <text class="mini r" x="520" y="409">1 142</text>
+      <text class="mini r" x="594" y="409">79</text>
+      <g class="hs pulse" data-id="7" tabindex="0" role="button" aria-label="Le nombre de personnes">
+        <circle class="hs-halo" cx="60" cy="404" r="26"/><circle class="hs-dot" cx="60" cy="404" r="20"/>
+        <text class="hs-num" x="60" y="404">7</text></g>
+
+      <rect class="champ" x="40" y="434" width="560" height="58" rx="5"/>
+      <text class="mini" x="92" y="457">CA hébergement HT</text>
+      <text class="mini r" x="440" y="457">5 664 €</text>
+      <text class="mini r" x="520" y="457">76 270 €</text>
+      <text class="mini r" x="594" y="457">5 312 €</text>
+      <text class="mini" x="92" y="480">Restaurant 1 940 € · bar 610 € · total HT 8 214 €</text>
+      <g class="hs pulse" data-id="8" tabindex="0" role="button" aria-label="Le chiffre d'affaires">
+        <circle class="hs-halo" cx="60" cy="456" r="26"/><circle class="hs-dot" cx="60" cy="456" r="20"/>
+        <text class="hs-num" x="60" y="456">8</text></g>
+
+      <rect class="champ" x="40" y="504" width="560" height="50" rx="5"/>
+      <text class="mini" x="92" y="526">Taux d'occupation</text>
+      <text class="mini r" x="440" y="526">79,7 %</text>
+      <text class="mini r" x="520" y="526">76,2 %</text>
+      <text class="mini r" x="594" y="526">74,2 %</text>
+      <text class="mini" x="92" y="546">Prix moyen 118,00 € · RevPAR 88,50 € · fréquentation 1,63</text>
+      <g class="hs pulse" data-id="9" tabindex="0" role="button" aria-label="Les indicateurs">
+        <circle class="hs-halo" cx="60" cy="524" r="26"/><circle class="hs-dot" cx="60" cy="524" r="20"/>
+        <text class="hs-num" x="60" y="524">9</text></g>
+    </svg>
+  </div>
+
+  <div class="panel scroll-zone" id="panel"></div>
+</div>
+
+<div class="nav-bar">
+  <button class="nbtn" id="prev">
+    <svg class="ico" aria-hidden="true"><use href="#ico-fleche-gauche"/></svg> Précédent
+  </button>
+  <div class="nav-prog" id="prog" aria-label="Zones parcourues"></div>
+  <button class="nbtn primary" id="next">
+    Suivant <svg class="ico" aria-hidden="true"><use href="#ico-fleche-droite"/></svg>
+  </button>
+</div>
+
+<script>
+/* ---------- SON ---------- */
+let AC;
+const ga=()=>{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();return AC};
+function tn(f1,f2,d,v,dl,tp){try{const a=ga(),o=a.createOscillator(),g=a.createGain();
+o.connect(g);g.connect(a.destination);o.type=tp||'sine';const t=a.currentTime+(dl||0);
+o.frequency.setValueAtTime(f1,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d*.8);
+g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+o.start(t);o.stop(t+d+.02)}catch(e){}}
+function ns(lp,v,d,dl){try{const a=ga(),buf=a.createBuffer(1,~~(a.sampleRate*d),a.sampleRate),
+dat=buf.getChannelData(0);for(let i=0;i<dat.length;i++)dat[i]=Math.random()*2-1;
+const src=a.createBufferSource();src.buffer=buf;const f=a.createBiquadFilter();
+f.type='bandpass';f.frequency.value=lp;f.Q.value=2;const g=a.createGain();
+const t=a.currentTime+(dl||0);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.04);
+g.gain.linearRampToValueAtTime(0,t+d);src.connect(f);f.connect(g);g.connect(a.destination);
+src.start(t);src.stop(t+d+.05)}catch(e){}}
+document.addEventListener('click',()=>{try{if(AC&&AC.state==='suspended')AC.resume()}catch(e){}},{once:true});
+/* un son distinct par repère : la note monte avec l'éloignement */
+const NOTES=[392,440,494,523,587,659,698,784,880,988];
+const SNDS={
+  hover:()=>tn(1000,1200,.06,.03,0,'triangle'),
+  repere:i=>{const f=NOTES[i%NOTES.length];tn(f,f,.2,.05,0,'triangle');tn(f*1.5,f*1.5,.16,.03,.05,'sine')},
+  tour:()=>{ns(2400,.02,.12,0);tn(1318,1318,.4,.04,0,'sine')}
+};
+
+/* ---------- DONNÉES ---------- */
+const REPERES=[
+{id:1,tag:"Ce qui date",titre:"L'en-tête",
+ body:"L'établissement, la <strong>date de la journée close</strong>, l'heure d'édition et souvent l'utilisateur qui a lancé la clôture. Une feuille lue le matin porte en règle générale la date de la veille. C'est la première chose à vérifier, avant le moindre chiffre.",
+ rows:[["Ce qu'on lit","Journée du mardi 14 octobre, éditée le 15 à 6 h 52"],
+       ["Ce qu'on vérifie","La date est celle de la journée close, et l'édition suit la clôture"],
+       ["L'erreur classique","Une feuille datée du jour en cours, éditée avant la clôture, aux chiffres provisoires"]],
+ rule:"Le planning montre le parc à l'instant ; la feuille fige une journée close, celle qui ne bougera plus. Une feuille provisoire n'a pas cette qualité."},
+
+{id:2,tag:"Ce qui situe",titre:"Les colonnes jour, cumul et N-1",
+ body:"Chaque ligne se lit sur trois colonnes qui ne mesurent pas la même période : la <strong>journée</strong>, sensible à un groupe ou à une panne ; le <strong>cumul du mois</strong>, recalculé sur les sommes ; la <strong>période de référence</strong>, l'an passé ou le budget.",
+ rows:[["Jour","79,7 % : un seul jour ne fait pas une tendance"],
+       ["Cumul","76,2 % : occupées cumulées sur disponibles cumulées, pas une moyenne de taux"],
+       ["N-1","74,2 % : comparable à condition que le calendrier le soit"]],
+ rule:"Un dimanche de l'an passé ne se compare pas à un mardi de cette année. La colonne de référence se lit avec son calendrier."},
+
+{id:3,tag:"Ce qui fonde les taux",titre:"L'état du parc",
+ body:"<strong>Capacité</strong>, unités <strong>disponibles</strong>, unités <strong>libres</strong> : le bloc dont dépendent tous les taux, et le premier à contrôler. Une erreur de parc se répercute sur chaque indicateur sans jamais se signaler d'elle-même.",
+ rows:[["Capacité","66, comme la veille : pas d'ouverture ni de fermeture d'unités"],
+       ["Disponibles","64 : la capacité moins les 2 unités hors service"],
+       ["L'égalité","51 occupées + 13 libres + 2 hors service = 66"]],
+ rule:"Le parc se lit avant tout chiffre d'affaires. Une unité qui manque à l'égalité est une unité sans statut."},
+
+{id:4,tag:"Ce qui sort du parc",titre:"Les unités hors service",
+ body:"Retirées de la vente par une décision enregistrée, avec un <strong>motif</strong> et une <strong>date de retour</strong>. Elles diminuent les disponibles, donc le dénominateur des taux. Une chambre simplement <strong>bloquée</strong> quelques heures reste dans le parc vendable.",
+ rows:[["Ce qu'on lit","Chambres 214 et 215, réfection des peintures, retour prévu le 17"],
+       ["Ce qu'on vérifie","Un motif, et une date de retour non dépassée pour chaque unité"],
+       ["Qui décide","La gouvernance et le service technique, qui lèvent aussi le statut"]],
+ rule:"Une date de retour dépassée est une anomalie à signaler le matin même : l'unité réparée manque au parc sans apparaître comme libre sur le planning."},
+
+{id:5,tag:"Ce qui rapporte ou non",titre:"Les unités occupées et leurs catégories",
+ body:"Une unité occupée ne rapporte pas toujours. La feuille sépare les <strong>payantes</strong>, les <strong>offertes</strong>, l'<strong>usage de la maison</strong> et les <strong>chambres de jour</strong>, parce que chacune entre ou non dans tel indicateur selon la règle de la maison.",
+ rows:[["Payantes","48 : la base du prix moyen dans la grande majorité des maisons"],
+       ["Offertes et maison","2 offertes, 1 usage de la maison : occupées, sans recette"],
+       ["Chambres de jour","2, comptées à part : du chiffre d'affaires sans nuitée"]],
+ rule:"Un taux sans sa définition ne veut rien dire : 51 occupées ou 48 payantes sur 64 disponibles donnent 79,7 % ou 75,0 %, deux calculs exacts."},
+
+{id:6,tag:"Ce qui a bougé",titre:"Les mouvements de la journée",
+ body:"Arrivées, départs, séjours en cours, non-présentations : le bloc explique comment le parc est passé de la veille au jour, et leur somme doit retomber sur les unités occupées. Un écart signale le plus souvent un mouvement non saisi ou saisi deux fois.",
+ rows:[["L'équation","46 occupées la veille + 19 arrivées − 14 départs = 51"],
+       ["Séjours en cours","32 recouches pour les étages, et la charge du lendemain"],
+       ["Non-présentation","1 réservation, hors des arrivées : elle se lit à part"]],
+ rule:"Une chambre quittée sans départ enregistré reste occupée sur la feuille. L'équation tombe juste quand même : c'est le rapport des étages qui la révèle."},
+
+{id:7,tag:"Ce qui dépend du comptoir",titre:"Le nombre de personnes",
+ body:"La donnée la plus fragile : le logiciel compte les personnes <strong>inscrites</strong> sur chaque dossier, pas celles qui dorment dans la chambre. Elle sert à l'indice de fréquentation, à la taxe de séjour, aux petits-déjeuners et aux déclarations statistiques.",
+ rows:[["Ce qu'on lit","83 personnes, dont 77 adultes et 6 enfants"],
+       ["Les bornes","Au moins 51, une par unité occupée ; au plus la capacité en lits"],
+       ["Le rapprochement","Les couverts du petit-déjeuner, comparés aux personnes déclarées"]],
+ rule:"Le nombre de personnes se corrige à l'arrivée, dossier par dossier. Le lendemain, plus personne ne sait qui était réellement là."},
+
+{id:8,tag:"Ce qui se lit sans se refaire",titre:"Le chiffre d'affaires",
+ body:"La ventilation par centre établie à la clôture, <strong>hors taxes</strong> et souvent toutes taxes comprises. On ne la refait pas : on la lit avec trois questions en tête. Hors taxes ou TTC ? Hébergement ou total ? Jour ou cumul ?",
+ rows:[["Hébergement HT","5 664 € : la base du prix moyen et du revenu par unité disponible"],
+       ["Autres centres","Restaurant 1 940 €, bar 610 € : total HT de 8 214 €"],
+       ["Le contrôle","Chaque centre contre sa source : ticket de clôture, relevé de couverts"]],
+ rule:"Les ratios se calculent sur le hors taxes, parce que la TVA n'appartient pas à la maison. Le TTC sert au rapprochement avec la caisse et la banque."},
+
+{id:9,tag:"Ce qui se lit en dernier",titre:"Les indicateurs",
+ body:"Taux d'occupation, prix moyen, revenu par unité disponible : le logiciel les calcule lui-même, et <strong>divise sans vérifier</strong> ce qu'il divise. Ils ne valent que ce que valent le parc, les mouvements, les personnes et le chiffre d'affaires.",
+ rows:[["Taux d'occupation","79,7 % : 51 occupées sur 64 disponibles"],
+       ["Prix moyen","118,00 € : 5 664 € HT sur 48 payantes"],
+       ["Revenu par unité","88,50 € : 5 664 € HT sur 64 disponibles"]],
+ rule:"Les indicateurs se lisent seulement après les contrôles précédents. Un taux exceptionnel se vérifie d'abord par son dénominateur."}
+]
+;
+
+/* ---------- RENDU ---------- */
+const $=id=>document.getElementById(id);
+let courant=null;
+const vus=new Set();
+
+function welcome(){
+  $('panel').innerHTML=`
+  <div class="welcome">
+    <div class="welcome-ico"><svg class="ico" aria-hidden="true"><use href="#ico-fichier"/></svg></div>
+    <div class="welcome-h">Une feuille, neuf zones à lire</div>
+    <div class="welcome-t">Cette feuille n'est celle d'aucun logiciel en particulier : rapport du directeur, état de situation ou manager's report, tous portent ces zones sous des noms qui changent d'une maison à l'autre. Neuf zones, et pour chacune ce qu'elle compte — la date, le parc, ce qui en sort, ce qui rapporte, ce qui bouge, qui a dormi, ce qui a été vendu, et les indicateurs qui se lisent en dernier.</div>
+    <div class="welcome-cta">Ouvrez une zone pour savoir ce qu'elle compte</div>
+  </div>`;
+}
+
+function rendRepere(id){
+  const r=REPERES.find(x=>x.id===id);
+  courant=id;vus.add(id);
+  $('panel').innerHTML=`
+    <span class="p-tag">${r.tag}</span>
+    <div class="p-h">${r.id}. ${r.titre}</div>
+    <div class="p-body">${r.body}</div>
+    <div class="p-rows">${r.rows.map(([l,v])=>
+      `<div class="p-row"><span class="p-row-l">${l}</span><span class="p-row-v">${v}</span></div>`).join('')}</div>
+    <div class="vigilance">${r.rule}</div>`;
+  document.querySelectorAll('.hs').forEach(g=>{
+    const i=+g.dataset.id;
+    g.classList.toggle('active',i===id);
+    g.classList.toggle('visited',vus.has(i));
+    g.classList.toggle('pulse',!vus.has(i));
+  });
+  majProg();
+  if(window.matchMedia('(max-width:880px)').matches){
+    $('panel').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+function majProg(){
+  $('prog').innerHTML=REPERES.map(r=>{
+    let c='dot';
+    if(r.id===courant)c+=' now';else if(vus.has(r.id))c+=' seen';
+    return `<span class="${c}"></span>`;
+  }).join('');
+}
+
+document.querySelectorAll('.hs').forEach(g=>{
+  const id=+g.dataset.id;
+  g.addEventListener('mouseenter',()=>SNDS.hover());
+  const ouvre=()=>{SNDS.repere(id-1);rendRepere(id)};
+  g.addEventListener('click',ouvre);
+  g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();ouvre()}});
+});
+$('prev').addEventListener('click',()=>{
+  const i=courant?REPERES.findIndex(r=>r.id===courant):0;
+  const j=(i-1+REPERES.length)%REPERES.length;
+  SNDS.repere(j);rendRepere(REPERES[j].id);
+});
+$('next').addEventListener('click',()=>{
+  const i=courant?REPERES.findIndex(r=>r.id===courant):-1;
+  const j=(i+1)%REPERES.length;
+  SNDS.repere(j);rendRepere(REPERES[j].id);
+});
+
+/* ---------- ZOOM ---------- */
+(function(){
+  const STEPS=[0.8,0.9,1,1.1,1.25,1.4,1.6];
+  let i=STEPS.indexOf(1);
+  const root=document.documentElement,val=$('zoomReset');
+  function apply(){const z=STEPS[i];root.style.setProperty('--z',z);
+    root.classList.toggle('zoomed',z>1);if(val)val.textContent=Math.round(z*100)+'%'}
+  $('zoomIn').addEventListener('click',()=>{i=Math.min(i+1,STEPS.length-1);apply()});
+  $('zoomOut').addEventListener('click',()=>{i=Math.max(i-1,0);apply()});
+  val.addEventListener('click',()=>{i=STEPS.indexOf(1);apply()});
+  apply();
+})();
+
+welcome();majProg();SNDS.tour();
+</script>
+</body>
+</html>

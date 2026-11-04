@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clôture journalière · Fiches A4</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:20px;--s6:24px;--s7:32px;--s8:40px;
+  --r1:8px;--r2:12px;--r3:16px;--r4:20px;--rf:999px;
+  --e1:0 1px 3px rgba(0,0,0,.06);--e2:0 4px 16px rgba(0,0,0,.08);--e3:0 12px 32px -8px rgba(0,0,0,.22);
+  --ink:#323232;--ink-body:#323232;--ink-soft:#6B6560;--line:rgba(0,0,0,.10);
+  --surface:#FAFAFA;
+  --paper:#F2F3F5;--ac:#64748B;--on-ac:#FAFAFA;--ac-bg:#E1E5EA;--ac-bd:#7A899F;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+/* Type 9 : le défilement est autorisé sur tous les écrans — un aperçu A4 ne
+   tient pas dans une hauteur de fenêtre (mobile-scroll.md, dernier paragraphe). */
+html,body{height:auto;min-height:100dvh;font-family:'Montserrat',sans-serif;
+  overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+/* Racine reduite de 20 % (design-tokens.md §1) : le reglage precedent
+   (17-22px) poussait le contenu hors de l'ecran sur les formats moyens.
+   Corps de texte effectif : 13 a 17,5px. Aucun token individuel retouche. */
+html{font-size:calc(clamp(13.5px, 0.84vw + 8px, 17.5px) * var(--z, 1))}
+body{background:var(--paper);padding:var(--s5);
+  padding-bottom:calc(var(--s8) + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;color:var(--ink-body)}
+@media (min-width:881px){body{padding:var(--s7)}}
+.ico{width:1.25em;height:1.25em;flex-shrink:0;fill:none;stroke:currentColor;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s4);
+  margin-bottom:var(--s5);flex-wrap:wrap}
+.h1{font-size:1.5rem;font-weight:800;color:var(--ink);margin-bottom:var(--s1);
+  letter-spacing:-.01em;line-height:1.2}
+.sub{font-size:0.85rem;font-weight:500;color:var(--ink-soft)}
+.zoom-ctrl{display:flex;align-items:center;gap:2px;background:var(--surface);
+  border:1.5px solid var(--line);border-radius:var(--r2);padding:3px;flex-shrink:0}
+.zoom-btn,.zoom-val{font-family:inherit;border:none;background:transparent;cursor:pointer;
+  color:var(--ink-soft);font-weight:800;transition:background .15s;border-radius:var(--r1)}
+.zoom-btn{width:1.6rem;height:1.6rem;font-size:0.95rem;line-height:1;
+  display:flex;align-items:center;justify-content:center}
+.zoom-btn:hover,.zoom-val:hover{background:var(--ac-bg);color:var(--ink)}
+.zoom-val{min-width:2.6rem;height:1.6rem;font-size:0.68rem;letter-spacing:.02em}
+
+.stage{flex:1;display:flex;gap:var(--s5);align-items:flex-start}
+@media (max-width:880px){.stage{flex-direction:column}}
+.sidebar-print{width:clamp(200px,22vw,280px);flex-shrink:0;background:var(--surface);
+  border:1.5px solid var(--line);border-radius:var(--r4);
+  display:flex;flex-direction:column;padding:var(--s4) 0;position:sticky;top:var(--s4)}
+@media (max-width:880px){.sidebar-print{width:100%;position:static}}
+.side-ttl{font-size:0.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-soft);padding:0 var(--s5) var(--s3)}
+.rbtn{display:flex;align-items:center;gap:var(--s3);padding:var(--s3) var(--s5);
+  cursor:pointer;border:none;border-left:3px solid transparent;background:transparent;
+  transition:background .2s;color:var(--ink-soft);font-family:inherit;
+  font-size:0.9rem;font-weight:600;min-height:48px;width:100%;text-align:left;line-height:1.3}
+.rbtn:hover{background:var(--ac-bg);color:var(--ink)}
+.rbtn.active{background:var(--ac-bg);color:var(--ink);border-left-color:var(--ac);font-weight:800}
+.side-note{font-size:0.68rem;font-weight:500;color:var(--ink-soft);line-height:1.5;
+  padding:var(--s3) var(--s5) 0;margin-top:var(--s3);border-top:1.5px solid var(--line)}
+
+.viewer{flex:1;min-width:0;display:flex;flex-direction:column;gap:var(--s4);align-items:center}
+.actions{display:flex;gap:var(--s3);flex-wrap:wrap;align-self:stretch;
+  justify-content:flex-end}
+.nbtn{font-family:inherit;font-size:0.8rem;font-weight:700;padding:var(--s3) var(--s5);
+  min-height:48px;border-radius:var(--r2);border:1.5px solid var(--line);
+  background:var(--surface);color:var(--ink);cursor:pointer;transition:background .18s;
+  display:inline-flex;align-items:center;gap:var(--s2)}
+.nbtn:hover{background:var(--ac-bg)}
+.nbtn.primary{background:var(--ac);color:var(--on-ac);border-color:var(--ac)}
+.nbtn.primary:hover{background:var(--ac-bd)}
+
+/* ---- la page A4 ---- */
+.page{background:var(--surface);width:210mm;max-width:100%;min-height:297mm;
+  padding:14mm;box-shadow:var(--e2);display:flex;flex-direction:column;gap:6mm;
+  border:1.5px solid var(--line)}
+.hdr{padding-bottom:4mm;display:flex;align-items:flex-start;justify-content:space-between;
+  gap:5mm;border-bottom:3px solid var(--ac);flex-wrap:wrap}
+.cname{font-size:1.5rem;font-weight:800;color:var(--ink);line-height:1.15;letter-spacing:-.01em}
+.ctag{font-size:0.85rem;font-weight:600;color:var(--ink-soft);font-style:italic;margin-top:1mm}
+.badges{display:flex;gap:var(--s2);flex-wrap:wrap}
+.bdg{font-size:0.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  padding:2px var(--s3);border-radius:var(--rf);border:1.5px solid var(--ac-bd);
+  background:var(--ac-bg);color:var(--ink)}
+.sect{font-size:0.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-soft);margin-bottom:2mm}
+.ic{border-radius:var(--r2);border:1.5px solid var(--line);padding:3mm 4mm;
+  display:flex;gap:4mm;align-items:baseline;margin-bottom:2mm;background:var(--surface)}
+.iname{font-size:0.95rem;font-weight:800;color:var(--ink);min-width:52mm;line-height:1.3}
+.idata{font-size:0.85rem;font-weight:500;color:var(--ink-body);line-height:1.5;flex:1}
+.steps{list-style:none;counter-reset:stp;padding:0}
+.step{counter-increment:stp;display:flex;gap:4mm;padding:2.5mm 0;
+  border-bottom:1px solid var(--line);font-size:0.85rem;font-weight:500;
+  color:var(--ink-body);line-height:1.5}
+.step:last-child{border-bottom:none}
+.step::before{content:counter(stp);font-size:0.68rem;font-weight:800;color:var(--on-ac);
+  background:var(--ac);border-radius:50%;width:6mm;height:6mm;display:flex;
+  align-items:center;justify-content:center;flex-shrink:0}
+.rule{padding:3mm 4mm;border-radius:var(--r2);border-left:3px solid var(--ac);
+  background:var(--ac-bg);font-size:0.85rem;font-weight:600;color:var(--ink);
+  line-height:1.5;margin-bottom:2mm}
+.foot{margin-top:auto;padding-top:4mm;border-top:1.5px solid var(--line);
+  font-size:0.68rem;font-weight:600;color:var(--ink-soft);display:flex;
+  justify-content:space-between;gap:var(--s3);flex-wrap:wrap}
+
+@media print{
+  body{padding:0;background:var(--surface)}
+  .top,.sidebar-print,.actions,.no-print{display:none}
+  .page{box-shadow:none;border:none;margin:0;width:auto;min-height:auto;
+    padding:10mm;page-break-after:always}
+  .stage,.viewer{display:block}
+}
+</style>
+</head>
+<body>
+<!--ICONS:START-->
+<svg style="display:none" aria-hidden="true">
+<symbol id="ico-imprimer" viewBox="0 0 24 24"><title>Imprimer</title><path d="M7 8.6V3.4h10v5.2"/><rect x="3.4" y="8.6" width="17.2" height="7.6" rx="2"/><rect x="7" y="14.4" width="10" height="6.2" rx="1.2"/></symbol>
+<symbol id="ico-telecharger" viewBox="0 0 24 24"><title>Télécharger</title><path d="M12 3.4v11"/><path d="m7.4 10 4.6 4.4 4.6-4.4"/><path d="M3.8 17.4v1.4a2 2 0 0 0 2 2h12.4a2 2 0 0 0 2-2v-1.4"/></symbol>
+</svg>
+<!--ICONS:END-->
+
+<div class="top">
+  <div class="ttl">
+    <div class="h1">Les fiches de la clôture journalière</div>
+    <div class="sub">Quatre fiches A4 pour la nuit de clôture · à imprimer ou à télécharger</div>
+  </div>
+  <div class="zoom-ctrl" role="group" aria-label="Zoom">
+    <button class="zoom-btn" id="zoomOut" aria-label="Réduire" title="Réduire">−</button>
+    <button class="zoom-val" id="zoomReset" aria-label="Réinitialiser le zoom" title="Réinitialiser">100%</button>
+    <button class="zoom-btn" id="zoomIn" aria-label="Agrandir" title="Agrandir">+</button>
+  </div>
+</div>
+
+<div class="stage">
+  <aside class="sidebar-print no-print">
+    <div class="side-ttl">Les quatre fiches</div>
+    <div id="liste"></div>
+    <div class="side-note">Chaque fiche se télécharge en HTML autonome, sans dépendance : elle s'ouvre et s'imprime depuis n'importe quel poste.</div>
+  </aside>
+  <div class="viewer">
+    <div class="actions no-print">
+      <button class="nbtn" id="dl">
+        <svg class="ico" aria-hidden="true"><use href="#ico-telecharger"/></svg> Télécharger en HTML
+      </button>
+      <button class="nbtn primary" id="pr">
+        <svg class="ico" aria-hidden="true"><use href="#ico-imprimer"/></svg> Imprimer cette fiche
+      </button>
+    </div>
+    <div id="apercu"></div>
+  </div>
+</div>
+
+<script>
+const FICHES=[
+{id:"anticiper",nom:"La liste de contrôle qui anticipe",
+ tag:"Un contrôle pour chaque élément que la bascule fige",
+ badges:["Clôture journalière", "Au fil du service"],
+ lignes:[
+  ["Pour la date des écritures", "Toutes les ventes du jour saisies ou transmises. Une ligne oubliée, saisie le lendemain, compterait dans le nouveau jour."],
+  ["Pour les imputations", "Tarif, adultes et mineurs justes sur chaque séjour : nuitée et taxe de séjour s'imputent sur ce que le dossier déclare."],
+  ["Pour les statistiques", "Unités offertes et hors service bien codées : une unité comptée occupée à tort le reste dans les chiffres de la veille."],
+  ["Pour les encaissements", "Chaque règlement sur la session de son auteur, sinon deux tiroirs sont faux au comptage."],
+  ["Pour les éditions", "Liste complète produite avant la bascule : après, une édition manquante porterait d'autres chiffres."],
+  ["La tenue de la liste", "La date, les heures réelles de chaque contrôle et les initiales du poste. Elle se range avec les éditions de la journée."],
+  ["La règle mère", "Chaque case se coche au moment où l'erreur se corrige encore d'un geste, et non toutes ensemble à la fin du service."]],
+ etapes:[
+  "À chaque arrivée : tarif, adultes et mineurs vérifiés au dossier.",
+  "À chaque encaissement : le règlement sur sa propre session.",
+  "À la fermeture des points de vente : ventes saisies ou transmises.",
+  "Avant la bascule : éditions produites, liste datée et paraphée."],
+ regles:[
+  "Une case restée vide se justifie dans la note de clôture : le poste du matin sait alors ce qui n'a pas été vérifié, et pourquoi.",
+  "La liste protège ce que la bascule fige. Cochée trop tard, elle constate une erreur au lieu de l'empêcher."]},
+
+{id:"pre-cloture",nom:"Avant de lancer la pré-clôture",
+ tag:"Six vérifications à la main, dans la demi-heure qui précède",
+ badges:["Clôture journalière", "Vérifications"],
+ lignes:[
+  ["Les arrivées du jour", "Toutes enregistrées ou décidées : maintien ou annulation, selon la garantie et les consignes."],
+  ["Les départs du jour", "Tous validés, tous soldés, ou le solde transféré sur un compte débiteur autorisé."],
+  ["Les points de vente", "Tous fermés, toutes leurs ventes transmises : l'écran d'état des interfaces donne l'heure de la dernière transmission."],
+  ["Les sessions de caisse", "Comptées et fermées par leur titulaire, ou par un responsable habilité, avec un témoin et une trace écrite."],
+  ["Les états des unités", "Réception et étages d'accord. Occupée d'un côté et vide de l'autre, le skip ; libre d'un côté et occupée de l'autre, le sleep."],
+  ["Les consignes du jour", "Lues, appliquées, notées."],
+  ["La règle mère", "L'ordre suit celui des comptes : ce qui concerne les clients d'abord, la caisse ensuite, les consignes en dernier."]],
+ etapes:[
+  "Contrôler les arrivées, puis les départs du jour.",
+  "Fermer les points de vente et vérifier les transmissions.",
+  "Compter les tiroirs et fermer les sessions.",
+  "Rapprocher les états des unités, relire les consignes, lancer."],
+ regles:[
+  "Une divergence d'état ne se corrige jamais au jugé : appel en chambre, passage discret sur place ou relecture du dossier, puis correction, et la vérification s'inscrit dans la note.",
+  "Faites dans cet ordre, ces vérifications laissent à la pré-clôture une liste courte, souvent vide : elle trouve beaucoup, mais pas tout."]},
+
+{id:"note",nom:"La note de clôture",
+ tag:"Ce que la nuit a constaté et décidé, pour le poste du matin",
+ badges:["Clôture journalière", "Transmission"],
+ lignes:[
+  ["Les heures", "L'heure de lancement de la clôture et l'heure de la bascule."],
+  ["Les anomalies traitées", "Chacune, avec le numéro de chambre ou de dossier, et la façon dont elle a été traitée."],
+  ["Les avertissements laissés", "En l'état, et pourquoi : un avertissement que personne n'a lu n'est pas traité, même si la clôture l'accepte."],
+  ["Les incidents techniques", "Avec les appels passés, l'heure et le message affiché par le logiciel."],
+  ["Les dossiers à reprendre", "Par ordre d'urgence : garantie à demander, dépassement de plafond à transmettre, départ à vérifier."],
+  ["L'auteur et le rangement", "Le nom de son auteur ; la note se range avec les éditions de la journée."],
+  ["La règle mère", "Un lecteur qui ne connaît pas la nuit doit la comprendre sans poser de question, et retrouver chaque dossier cité par son numéro."]],
+ etapes:[
+  "Ouvrir la note au lancement, heure notée.",
+  "Écrire chaque correction au moment où elle se fait.",
+  "Lister les dossiers laissés au poste du matin.",
+  "Signer, et ranger la note avec les éditions."],
+ regles:[
+  "Elle s'écrit pendant la clôture, au fil des corrections, et non de mémoire à la fin : sans elle, le poste du matin refait les vérifications de la nuit.",
+  "Un incident de caisse y figure avec le nom du témoin et l'heure de chaque correction, comme les deux refus du camping au bord du lac de barrage."]},
+
+{id:"apres-bascule",nom:"Ce qu'on ne corrige plus après la bascule",
+ tag:"Quatre éléments figés, une seule voie : l'écriture du jour",
+ badges:["Clôture journalière", "Irréversibilité"],
+ lignes:[
+  ["La date des écritures", "Une ligne oubliée de la veille porte la date du lendemain : elle compte dans le nouveau jour, la veille reste incomplète."],
+  ["Les imputations de la nuit", "Une nuitée portée à tort ne se supprime pas : ligne de correction datée du jour, ou avoir si la facture est émise."],
+  ["Les statistiques du jour écoulé", "Taux d'occupation, prix moyen et nombre de personnes restent tels qu'ils ont été enregistrés."],
+  ["Les éditions de la journée", "La version produite fait foi : l'écart s'explique dans le rapport, à côté de l'édition d'origine."],
+  ["La réouverture", "Exceptionnelle, réservée à l'éditeur ou à un administrateur, tracée, et demandée sur décision de la direction."],
+  ["La loi", "Depuis le 1er janvier 2018, un outil de caisse conforme n'efface aucune opération : il la corrige par une opération nouvelle."],
+  ["La règle mère", "Ce qui a été vérifié avant la bascule devient la vérité de la journée ; le reste devient une correction à écrire, justifier et expliquer."]],
+ etapes:[
+  "Passer la correction le jour même, datée du jour.",
+  "Renvoyer à l'écriture d'origine.",
+  "Vérifier les effets : départ, moyen de paiement, solde.",
+  "Expliquer l'écart dans le rapport d'activité."],
+ regles:[
+  "Une correction sans référence à l'écriture d'origine fait apparaître deux erreurs au lieu d'une : l'écriture fausse et une écriture que rien n'explique.",
+  "Pour la 219 partie à l'aube, la ligne de correction du vendredi renvoie aux deux lignes du jeudi, dont le taux reste à 71,8 % au lieu de 70,6 %."]}
+];
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+let courante=0;
+
+function corpsFiche(f){
+  let h='';
+  h+='<div class="hdr"><div><div class="cname">'+esc(f.nom)+'</div>';
+  h+='<div class="ctag">'+esc(f.tag)+'</div></div><div class="badges">';
+  h+=f.badges.map(b=>'<span class="bdg">'+esc(b)+'</span>').join('');
+  h+='</div></div>';
+  h+='<div><div class="sect">Ce que la fiche fait vérifier</div>';
+  h+=f.lignes.map(([n,d])=>
+    '<div class="ic"><span class="iname">'+esc(n)+'</span><span class="idata">'+esc(d)+'</span></div>'
+  ).join('');
+  h+='</div>';
+  h+='<div><div class="sect">L\'ordre des gestes au poste de clôture</div><ol class="steps">';
+  h+=f.etapes.map(e=>'<li class="step">'+esc(e)+'</li>').join('');
+  h+='</ol></div>';
+  h+='<div><div class="sect">À ne pas manquer</div>';
+  h+=f.regles.map(r=>'<div class="rule">'+esc(r)+'</div>').join('');
+  h+='</div>';
+  h+='<div class="foot"><span>Fiche de clôture — à garder près du poste de nuit</span>';
+  h+='<span>'+esc(f.nom)+'</span></div>';
+  return h;
+}
+
+function peintListe(){
+  $('liste').innerHTML=FICHES.map((f,i)=>
+    '<button class="rbtn'+(i===courante?' active':'')+'" data-i="'+i+'">'+esc(f.nom)+'</button>'
+  ).join('');
+  document.querySelectorAll('.rbtn').forEach(b=>
+    b.addEventListener('click',()=>{courante=+b.dataset.i;peint()}));
+}
+
+function peint(){
+  peintListe();
+  $('apercu').innerHTML='<div class="page">'+corpsFiche(FICHES[courante])+'</div>';
+}
+
+/* ---- HTML autonome : CSS minimal inliné, aucune dépendance au runtime ---- */
+function htmlAutonome(f){
+  const css=[
+   '*{margin:0;padding:0;box-sizing:border-box}',
+   "body{font-family:'Montserrat',Helvetica,Arial,sans-serif;background:#FAFAFA;color:#323232;",
+   'padding:14mm;max-width:210mm;margin:auto;font-size:11pt;line-height:1.5}',
+   '.hdr{padding-bottom:4mm;margin-bottom:6mm;border-bottom:3px solid #64748B;',
+   'display:flex;justify-content:space-between;gap:5mm;flex-wrap:wrap}',
+   '.cname{font-size:20pt;font-weight:800;line-height:1.15}',
+   '.ctag{font-size:10pt;font-style:italic;color:#6B6560;margin-top:1mm}',
+   '.badges{display:flex;gap:2mm;flex-wrap:wrap}',
+   '.bdg{font-size:8pt;font-weight:800;letter-spacing:.08em;text-transform:uppercase;',
+   'padding:1mm 3mm;border-radius:20px;border:1.5px solid #7A899F;background:#E1E5EA}',
+   '.sect{font-size:8pt;font-weight:800;letter-spacing:.14em;text-transform:uppercase;',
+   'color:#6B6560;margin:6mm 0 2mm}',
+   '.ic{border-radius:3mm;border:1.5px solid rgba(0,0,0,.1);padding:3mm 4mm;',
+   'display:flex;gap:4mm;align-items:baseline;margin-bottom:2mm}',
+   '.iname{font-weight:800;min-width:52mm}',
+   '.idata{flex:1}',
+   'ol{list-style:none;counter-reset:stp;padding:0}',
+   'li{counter-increment:stp;display:flex;gap:4mm;padding:2.5mm 0;',
+   'border-bottom:1px solid rgba(0,0,0,.1)}',
+   'li:last-child{border-bottom:none}',
+   'li::before{content:counter(stp);font-size:8pt;font-weight:800;background:#64748B;',
+   'border-radius:50%;width:6mm;height:6mm;min-width:6mm;display:flex;',
+   'align-items:center;justify-content:center}',
+   '.rule{padding:3mm 4mm;border-radius:3mm;border-left:3px solid #64748B;',
+   'background:#E1E5EA;font-weight:600;margin-bottom:2mm}',
+   '.foot{margin-top:8mm;padding-top:4mm;border-top:1.5px solid rgba(0,0,0,.1);',
+   'font-size:8pt;font-weight:600;color:#6B6560;display:flex;justify-content:space-between;gap:3mm}',
+   '@media print{body{padding:10mm}}'
+  ].join('');
+  return '<!DOCTYPE html>\n<html lang="fr">\n<head>\n<meta charset="UTF-8">\n'
+    +'<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+    +'<title>'+esc(f.nom)+' · Fiche de clôture</title>\n'
+    +'<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">\n'
+    +'<style>'+css+'</style>\n</head>\n<body>\n'+corpsFiche(f)+'\n</body>\n</html>';
+}
+
+$('dl').addEventListener('click',()=>{
+  const f=FICHES[courante];
+  const a=document.createElement('a');
+  a.href='data:text/html;charset=utf-8,'+encodeURIComponent(htmlAutonome(f));
+  a.download='M4-4-1-fiche-'+f.id+'.html';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+});
+$('pr').addEventListener('click',()=>window.print());
+
+(function(){
+  const STEPS=[0.8,0.9,1,1.1,1.25,1.4,1.6];let i=STEPS.indexOf(1);
+  const root=document.documentElement,val=$('zoomReset');
+  function apply(){const z=STEPS[i];root.style.setProperty('--z',z);
+    if(val)val.textContent=Math.round(z*100)+'%'}
+  $('zoomIn').addEventListener('click',()=>{i=Math.min(i+1,STEPS.length-1);apply()});
+  $('zoomOut').addEventListener('click',()=>{i=Math.max(i-1,0);apply()});
+  val.addEventListener('click',()=>{i=STEPS.indexOf(1);apply()});apply()})();
+
+peint();
+</script>
+</body>
+</html>
